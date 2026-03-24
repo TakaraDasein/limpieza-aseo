@@ -1,0 +1,55 @@
+---
+---
+
+<nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-[0px_10px_30px_rgba(0,0,0,0.03)] border-b border-surface-container-highest/50">
+  <div class="flex justify-between items-center px-6 md:px-12 py-5 max-w-screen-2xl mx-auto font-['Plus_Jakarta_Sans'] tracking-tight text-sm font-semibold">
+    <a href="/" class="flex items-center">
+      <img src="/logo-h.png" alt="Mister LyA" class="h-12 w-auto" />
+    </a>
+    
+    <div class="hidden md:flex items-center gap-10">
+      <a class="text-slate-500 hover:text-primary transition-colors" href="/">Inicio</a>
+      <a class="text-slate-500 hover:text-primary transition-colors" href="/catalogo">Catálogo</a>
+      <a class="text-slate-500 hover:text-primary transition-colors" href="/#mision">Nuestra Esencia</a>
+      <a class="text-slate-500 hover:text-primary transition-colors" href="https://wa.me/573115412230" target="_blank">Contacto</a>
+    </div>
+    
+    <div class="flex items-center gap-6">
+      <div class="hidden md:flex items-center gap-4 text-on-surface-variant">
+        <button class="hover:text-primary transition-colors">
+          <span class="material-symbols-outlined">shopping_cart</span>
+        </button>
+        <button class="hover:text-primary transition-colors">
+          <span class="material-symbols-outlined">person</span>
+        </button>
+      </div>
+      <button class="bg-primary text-on-primary px-6 py-2.5 rounded-full font-bold hover:shadow-lg hover:shadow-primary/20 transition-all active:scale-95">
+        Comprar
+      </button>
+      
+      <!-- Mobile menu button -->
+      <button class="md:hidden material-symbols-outlined text-primary" id="mobile-menu-btn">
+        menu
+      </button>
+    </div>
+  </div>
+  
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-surface-container-highest">
+    <div class="flex flex-col gap-4 px-6 py-4">
+      <a class="text-slate-500 hover:text-primary transition-colors py-2" href="/">Inicio</a>
+      <a class="text-slate-500 hover:text-primary transition-colors py-2" href="/catalogo">Catálogo</a>
+      <a class="text-slate-500 hover:text-primary transition-colors py-2" href="/#mision">Nuestra Esencia</a>
+      <a class="text-slate-500 hover:text-primary transition-colors py-2" href="https://wa.me/573115412230" target="_blank">Contacto</a>
+    </div>
+  </div>
+</nav>
+
+<script>
+  const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  
+  mobileMenuBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+  });
+</script>

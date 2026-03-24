@@ -1,0 +1,106 @@
+---
+// Productos insignia destacados en el home
+const featuredProducts = [
+  {
+    id: 'detergente',
+    category: 'Edición Textil',
+    name: 'Detergente Líquido Premium',
+    description: 'Más que un jabón, es un tratamiento de restauración para sus prendas. Formulado con agentes de baja espuma que penetran profundamente en las fibras sin comprometer la integridad del tejido. Una oda a la frescura eterna que mantiene la vivacidad de los colores.',
+    features: [
+      'Biodegradabilidad inmediata para un ciclo sostenible.',
+      'Aroma firma de Mister LyA que perdura por días.'
+    ],
+    price: '$12.99',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAfp3RatSEVLgb4oYhlmfiXztweqVNwJbX6HSi-9-C8hjC-5r0GSWgNeszvhDq6PgCnLYqZjpp_m2nyfRSN5wQbHmwICdFHo-jP_ZzO6FpeGIQlQl1KkBPHa4zZlLi036MOMDxd8qzb3sqPk4_DXC9HfvGuCFlYcs_cJffqGjRgd-zRV4ylRpqNmYP8zVeGsR-x7RFOqnaTFpuwk3ErpcSgzDTbVGidKSPCnBOxryjGBS8C6wEKz7wfUPzXiGoHNMQVpNIA3xF_QiQ',
+    alt: 'Luxury blue laundry detergent bottle in a bright modern laundry room',
+    reverse: false
+  },
+  {
+    id: 'desinfectante',
+    category: 'Protección Invisible',
+    name: 'Desinfectante Multi-Superficie',
+    description: 'Seguridad sin sacrificios. Nuestro desinfectante de grado quirúrgico ha sido refinado para el uso doméstico diario. Elimina el 99.9% de los patógenos mientras envuelve su hogar en una bruma cítrica revitalizante que purifica el ambiente de forma natural.',
+    features: [
+      'No tóxico para mascotas y niños.',
+      'Secado rápido sin dejar residuos pegajosos.'
+    ],
+    price: '$8.50',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBWZ1ojFpcgKguS13-QrwkZ6s3uxg33yrZ_qxTGOKzlJYc79D04JpPPYNfqSnvrjPvKP2P2waR5fthLeceGttjaL4JP4dPqS15nED5UeFXAQjaODsfsUZGLnlF189E8n6s65XiI0uyLXZB1coaRWe1qyTjHQBZ0tbexNz6ujPVVIdYKs-SEOTgPAw03TsAPw6O51lLMN2CYW3pdlrXn2y482wYQYx232c8A2oFKl-vLkS5m5FlDVZSMfHtpg1pOPVKN0KGoMu1LyXU',
+    alt: 'Minimalist disinfectant spray bottle on a wooden table',
+    reverse: true
+  },
+  {
+    id: 'kit',
+    category: 'Sistema Integral',
+    name: 'Kit de Limpieza Editorial',
+    description: 'La culminación de nuestra filosofía. Este kit maestro reúne lo esencial para transformar cualquier espacio bajo los estándares del "Pristine Flow". Cada elemento ha sido seleccionado para trabajar en perfecta sinergia, garantizando un entorno inmaculado con el mínimo esfuerzo.',
+    features: [
+      'Detergente 1L',
+      'Desinfectante 500ml',
+      'Paños de Microfibra',
+      'Cepillo de Grano Fino'
+    ],
+    price: '$24.00',
+    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCCYOlRiafb8Qw9s4-u3uE4td33mOoRyIThKypTjnMZd2oncFzzEg2b8bjirdONI2bgUsJ-CaTRjQddXAAp2Il6HFW00nT-m-4BpKrwpRo3A75cRcqI8KXvURSGGU_IMZ8y7nIyzmf615XeqF0uc19oVGrwqCnb_rGAd4kb3Ln6q1wlNkWSORPa1HGC_Buk0FAAMaNZPGkkG976Tnh-OcQGs2fk93KnD-6ybHUfsTEmZZuDIvEU_iXzPvCf-iR79t6WdmO4sGIXRXE',
+    alt: 'Complete cleaning kit in a wooden crate',
+    reverse: false
+  }
+];
+---
+
+<section class="py-0" id="featured-products">
+  {featuredProducts.map((product, index) => (
+    <div class={`group relative flex flex-col ${product.reverse ? 'lg:flex-row-reverse' : 'lg:flex-row'} items-center min-h-[921px] ${index % 2 === 0 ? 'bg-white' : 'bg-surface-container-low'} overflow-hidden border-b border-surface-container-high`}>
+      <!-- Image Section -->
+      <div class="w-full lg:w-1/2 h-[512px] lg:h-screen sticky top-0">
+        <img 
+          class="w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 group-hover:scale-105" 
+          alt={product.alt}
+          src={product.image}
+        />
+        <div class="absolute inset-0 bg-primary/5"></div>
+      </div>
+      
+      <!-- Content Section -->
+      <div class="w-full lg:w-1/2 p-12 md:p-24 relative">
+        <div class="max-w-md mx-auto">
+          <span class="text-primary font-bold tracking-[0.3em] uppercase text-sm mb-6 block">
+            {product.category}
+          </span>
+          
+          <h2 class="font-headline text-5xl md:text-7xl font-extrabold text-primary mb-8 tracking-tighter">
+            {product.name}
+          </h2>
+          
+          <p class="text-on-surface-variant text-lg md:text-xl leading-relaxed mb-10">
+            {product.description}
+          </p>
+          
+          <div class="space-y-6 mb-12">
+            {product.features.map(feature => (
+              <div class="flex items-start gap-4">
+                <span class="material-symbols-outlined text-secondary">
+                  {product.id === 'kit' ? 'inventory_2' : 'check_circle'}
+                </span>
+                <p class="text-on-surface font-medium">{feature}</p>
+              </div>
+            ))}
+          </div>
+          
+          <div class="flex items-center justify-between border-t border-surface-container-high pt-10">
+            <div class="flex flex-col">
+              <span class="text-on-surface-variant text-sm font-semibold mb-1">Inversión</span>
+              <span class="text-4xl font-extrabold text-primary">{product.price}</span>
+            </div>
+            <button 
+              class="bg-primary text-on-primary px-8 py-4 rounded-full font-bold hover:scale-95 transition-all flex items-center gap-3"
+              onclick={`window.open('https://wa.me/573115412230?text=Hola%2C%20quiero%20información%20sobre%20${encodeURIComponent(product.name)}', '_blank')`}
+            >
+              Añadir al carrito <span class="material-symbols-outlined">shopping_bag</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  ))}
+</section>

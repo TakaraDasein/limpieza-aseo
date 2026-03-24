@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import CategoryHero from '../components/CategoryHero.astro';
+import InteractiveCatalog from '../components/InteractiveCatalog.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppButton from '../components/WhatsAppButton.astro';
+---
+
+<Layout 
+	title="Catálogo de Productos | Mister LyA"
+	description="Explora nuestro catálogo completo de productos de limpieza profesional. Escobas, traperos, jabones, esponjas y más."
+>
+	<Navbar />
+	
+	<main class="pt-20">
+		<CategoryHero />
+		<InteractiveCatalog />
+	</main>
+	
+	<Footer />
+	<WhatsAppButton />
+</Layout>
