@@ -16,14 +16,14 @@
     
     <div class="flex items-center gap-6">
       <!-- Mobile menu button -->
-      <button class="md:hidden material-symbols-outlined text-primary" id="mobile-menu-btn">
+      <button class="md:hidden material-symbols-outlined text-primary transition-transform duration-300" id="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
         menu
       </button>
     </div>
   </div>
   
   <!-- Mobile menu -->
-  <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-surface-container-highest">
+  <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-surface-container-highest transition-all duration-300 ease-in-out overflow-hidden">
     <div class="flex flex-col gap-4 px-6 py-4">
       <a class="text-slate-500 hover:text-primary transition-colors py-2" href="/">Inicio</a>
       <a class="text-slate-500 hover:text-primary transition-colors py-2" href="/catalogo">Catálogo</a>
@@ -38,6 +38,25 @@
   const mobileMenu = document.getElementById('mobile-menu');
   
   mobileMenuBtn?.addEventListener('click', () => {
+    const isHidden = mobileMenu?.classList.contains('hidden');
     mobileMenu?.classList.toggle('hidden');
+    mobileMenuBtn?.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+    
+    // Toggle icon between menu and close
+    if (mobileMenuBtn) {
+      mobileMenuBtn.textContent = isHidden ? 'close' : 'menu';
+    }
+  });
+  
+  // Close menu when clicking on a link
+  const menuLinks = mobileMenu?.querySelectorAll('a');
+  menuLinks?.forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu?.classList.add('hidden');
+      mobileMenuBtn?.setAttribute('aria-expanded', 'false');
+      if (mobileMenuBtn) {
+        mobileMenuBtn.textContent = 'menu';
+      }
+    });
   });
 </script>
