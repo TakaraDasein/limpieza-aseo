@@ -53,6 +53,7 @@ const categoryColors: Record<string, string> = {
               type="text"
               id="product-search"
               placeholder="Nombre del producto..."
+              autocomplete="off"
               class="w-full pl-12 pr-12 py-3.5 bg-surface-container rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-on-surface placeholder-on-surface-variant transition-all"
             />
             <button
@@ -62,6 +63,10 @@ const categoryColors: Record<string, string> = {
             >
               <span class="material-symbols-outlined text-xl text-on-surface-variant hover:text-primary transition-colors cursor-pointer">close</span>
             </button>
+            
+            <!-- Autocomplete dropdown -->
+            <div id="autocomplete-dropdown" class="autocomplete-dropdown absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-2xl border border-surface-container-highest overflow-hidden opacity-0 pointer-events-none transition-all duration-200 z-50">
+            </div>
           </div>
         </div>
         
@@ -127,9 +132,29 @@ const categoryColors: Record<string, string> = {
             </h3>
           </div>
           
-          <!-- Selection indicator -->
-          <div class="category-indicator absolute -top-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center opacity-0 scale-0 transition-all duration-300">
-            <span class="material-symbols-outlined text-white text-sm">check</span>
+          <!-- Animated border stroke -->
+          <div class="category-stroke absolute inset-0 rounded-2xl pointer-events-none opacity-0 transition-opacity duration-300">
+            <svg class="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
+              <rect 
+                class="stroke-animated"
+                x="2" 
+                y="2" 
+                width="calc(100% - 4px)" 
+                height="calc(100% - 4px)" 
+                rx="14"
+                fill="none" 
+                stroke="url(#gradient)" 
+                stroke-width="3"
+                stroke-dasharray="400"
+                stroke-dashoffset="400"
+              />
+              <defs>
+                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style="stop-color:var(--color-primary);stop-opacity:1" />
+                  <stop offset="100%" style="stop-color:var(--color-secondary);stop-opacity:1" />
+                </linearGradient>
+              </defs>
+            </svg>
           </div>
         </button>
       ))}
@@ -275,6 +300,7 @@ const categoryColors: Record<string, string> = {
     // Elements
     const searchInput = document.getElementById('product-search') as HTMLInputElement;
     const clearSearchBtn = document.getElementById('clear-search') as HTMLButtonElement;
+    const autocompleteDropdown = document.getElementById('autocomplete-dropdown') as HTMLDivElement;
     const categoryFilter = document.getElementById('category-filter') as HTMLSelectElement;
     const searchResultsInfo = document.getElementById('search-results-info') as HTMLDivElement;
     const resultsText = document.getElementById('results-text') as HTMLSpanElement;
@@ -285,6 +311,65 @@ const categoryColors: Record<string, string> = {
 
     let currentSearchTerm = '';
     let currentCategory = '';
+    let allProducts: Array<{name: string, description: string, category: string}> = [];
+
+    // Build products list for autocomplete
+    categorySections.forEach(section => {
+      const categoryId = section.getAttribute('data-category') || '';
+      section.querySelectorAll('.product-card').forEach(card => {
+        const name = card.getAttribute('data-product-name') || '';
+        const description = card.getAttribute('data-product-description') || '';
+        if (name) {
+          allProducts.push({ name, description, category: categoryId });
+        }
+      });
+    });
+
+    // Show autocomplete suggestions
+    function showAutocomplete(searchTerm: string) {
+      if (!searchTerm || searchTerm.length < 2) {
+        autocompleteDropdown.style.opacity = '0';
+        autocompleteDropdown.classList.add('pointer-events-none');
+        return;
+      }
+
+      const matches = allProducts.filter(product => 
+        product.name.includes(searchTerm.toLowerCase())
+      ).slice(0, 5); // Max 5 suggestions
+
+      if (matches.length === 0) {
+        autocompleteDropdown.style.opacity = '0';
+        autocompleteDropdown.classList.add('pointer-events-none');
+        return;
+      }
+
+      autocompleteDropdown.innerHTML = matches.map(product => `
+        <div class="autocomplete-item px-4 py-3 cursor-pointer border-b border-surface-container-highest last:border-0" data-product="${product.name}">
+          <div class="flex items-center gap-3">
+            <span class="material-symbols-outlined text-primary">shopping_bag</span>
+            <div class="flex-1">
+              <div class="font-semibold text-on-surface">${product.name.charAt(0).toUpperCase() + product.name.slice(1)}</div>
+              <div class="text-xs text-on-surface-variant">${product.description.slice(0, 50)}...</div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      // Add click handlers to autocomplete items
+      autocompleteDropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const productName = item.getAttribute('data-product') || '';
+          searchInput.value = productName.charAt(0).toUpperCase() + productName.slice(1);
+          currentSearchTerm = productName;
+          autocompleteDropdown.style.opacity = '0';
+          autocompleteDropdown.classList.add('pointer-events-none');
+          updateCategoryVisibility();
+        });
+      });
+
+      autocompleteDropdown.style.opacity = '1';
+      autocompleteDropdown.classList.remove('pointer-events-none');
+    }
 
     // Update visible categories based on filters
     function updateCategoryVisibility() {
@@ -375,20 +460,20 @@ const categoryColors: Record<string, string> = {
     function updateCategoryCards() {
       categoryCards.forEach(card => {
         const cardCategoryId = card.getAttribute('data-category');
-        const indicator = card.querySelector('.category-indicator') as HTMLElement;
+        const stroke = card.querySelector('.category-stroke') as HTMLElement;
+        const svgRect = card.querySelector('.stroke-animated') as SVGRectElement;
         
         if (currentCategory === cardCategoryId) {
           card.classList.add('active-category');
-          if (indicator) {
-            indicator.style.opacity = '1';
-            indicator.style.transform = 'scale(1)';
+          if (svgRect) {
+            // Reset animation
+            svgRect.style.animation = 'none';
+            setTimeout(() => {
+              svgRect.style.animation = '';
+            }, 10);
           }
         } else {
           card.classList.remove('active-category');
-          if (indicator) {
-            indicator.style.opacity = '0';
-            indicator.style.transform = 'scale(0)';
-          }
         }
       });
     }
@@ -396,7 +481,16 @@ const categoryColors: Record<string, string> = {
     // Search input handler
     searchInput?.addEventListener('input', (e) => {
       currentSearchTerm = (e.target as HTMLInputElement).value.toLowerCase().trim();
+      showAutocomplete(currentSearchTerm);
       updateCategoryVisibility();
+    });
+
+    // Hide autocomplete when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!searchInput?.contains(e.target as Node) && !autocompleteDropdown?.contains(e.target as Node)) {
+        autocompleteDropdown.style.opacity = '0';
+        autocompleteDropdown.classList.add('pointer-events-none');
+      }
     });
 
     // Category filter dropdown handler
@@ -433,6 +527,8 @@ const categoryColors: Record<string, string> = {
     clearSearchBtn?.addEventListener('click', () => {
       searchInput.value = '';
       currentSearchTerm = '';
+      autocompleteDropdown.style.opacity = '0';
+      autocompleteDropdown.classList.add('pointer-events-none');
       updateCategoryVisibility();
       searchInput.focus();
     });
@@ -543,19 +639,32 @@ const categoryColors: Record<string, string> = {
     }
   }
   
-  /* Active category card styling */
-  .category-card.active-category {
-    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-    border-color: var(--color-primary);
-    transform: scale(1.05);
+  /* Active category card with animated stroke */
+  .category-card.active-category .category-stroke {
+    opacity: 1;
   }
   
-  .category-card.active-category h3,
-  .category-card.active-category .material-symbols-outlined {
-    color: white !important;
+  .category-card.active-category .stroke-animated {
+    animation: drawStroke 0.6s ease-out forwards;
   }
   
-  .category-card.active-category > div > div {
-    background-color: rgba(255, 255, 255, 0.2) !important;
+  @keyframes drawStroke {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+  
+  /* Autocomplete dropdown */
+  .autocomplete-dropdown {
+    max-height: 300px;
+    overflow-y: auto;
+  }
+  
+  .autocomplete-item {
+    transition: all 0.2s ease;
+  }
+  
+  .autocomplete-item:hover {
+    background: var(--color-primary-container);
   }
 </style>
