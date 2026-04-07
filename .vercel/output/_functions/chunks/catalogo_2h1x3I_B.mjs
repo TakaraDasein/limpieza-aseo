@@ -1,10 +1,10 @@
 import { c as createComponent } from './astro-component_Dl5Ek4Rh.mjs';
 import { y as maybeRenderHead, a4 as addAttribute, Q as renderTemplate, F as Fragment } from './sequence_Cz06ISpH.mjs';
-import { r as renderComponent } from './entrypoint_BGUmwUHK.mjs';
+import { r as renderComponent } from './entrypoint_wGGFH45s.mjs';
 import { $ as $$Layout } from './Layout_Cdd_i9Up.mjs';
 import { $ as $$Navbar, a as $$Footer, b as $$WhatsAppButton } from './WhatsAppButton_DY_RVNeH.mjs';
 import { r as renderScript } from './script_C0wet-lX.mjs';
-import { d as db, p as products, c as categories } from './index_BVNmz_ij.mjs';
+import { d as db, p as products, c as categories } from './index_BO5qdVM-.mjs';
 
 const $$CategoryHero = createComponent(($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$props, $$slots);

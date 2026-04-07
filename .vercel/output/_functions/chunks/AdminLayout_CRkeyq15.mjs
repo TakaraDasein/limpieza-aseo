@@ -2,7 +2,7 @@ import { c as createComponent } from './astro-component_Dl5Ek4Rh.mjs';
 import { a4 as addAttribute, ba as renderHead, bb as renderSlot, Q as renderTemplate } from './sequence_Cz06ISpH.mjs';
 import { r as renderScript } from './script_C0wet-lX.mjs';
 /* empty css                 */
-import { g as getSession } from './server_BFgY1CG7.mjs';
+import { g as getSession } from './server_B7A4FRAC.mjs';
 
 const $$AdminLayout = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$props, $$slots);

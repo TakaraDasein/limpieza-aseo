@@ -1,8 +1,8 @@
 import { c as createComponent } from './astro-component_Dl5Ek4Rh.mjs';
 import { Q as renderTemplate, y as maybeRenderHead } from './sequence_Cz06ISpH.mjs';
-import { r as renderComponent } from './entrypoint_BGUmwUHK.mjs';
-import { $ as $$AdminLayout } from './AdminLayout_YUFbb85F.mjs';
-import { d as db, p as products, c as categories } from './index_BVNmz_ij.mjs';
+import { r as renderComponent } from './entrypoint_wGGFH45s.mjs';
+import { $ as $$AdminLayout } from './AdminLayout_CRkeyq15.mjs';
+import { d as db, p as products, c as categories } from './index_BO5qdVM-.mjs';
 
 const $$Index = createComponent(async ($$result, $$props, $$slots) => {
   const allProducts = await db.select().from(products).all();

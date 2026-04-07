@@ -1,8 +1,8 @@
 import { c as createComponent } from './astro-component_Dl5Ek4Rh.mjs';
 import { Q as renderTemplate, y as maybeRenderHead } from './sequence_Cz06ISpH.mjs';
-import { r as renderComponent } from './entrypoint_BGUmwUHK.mjs';
+import { r as renderComponent } from './entrypoint_wGGFH45s.mjs';
 import { $ as $$Layout } from './Layout_Cdd_i9Up.mjs';
-import { g as getSession } from './server_BFgY1CG7.mjs';
+import { g as getSession } from './server_B7A4FRAC.mjs';
 
 const $$Login = createComponent(async ($$result, $$props, $$slots) => {
   const Astro2 = $$result.createAstro($$props, $$slots);

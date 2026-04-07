@@ -3,7 +3,7 @@ import Credentials from '@auth/core/providers/credentials';
 import { db } from './src/db';
 import { users } from './src/db/schema';
 import { eq } from 'drizzle-orm';
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 import type { User } from './src/db/schema';
 
 export default defineConfig({
@@ -34,8 +34,8 @@ export default defineConfig({
           return null;
         }
 
-        // Verify password using bcrypt
-        const isValidPassword = await bcrypt.compare(password, user.password);
+        // Verify password using bcryptjs
+        const isValidPassword = await bcryptjs.compare(password, user.password);
 
         if (!isValidPassword) {
           return null;

@@ -1,4 +1,4 @@
-import { d as db, c as categories } from './index_BVNmz_ij.mjs';
+import { d as db, c as categories } from './index_BO5qdVM-.mjs';
 
 const GET = async () => {
   try {

@@ -1,9 +1,9 @@
 import { c as createComponent } from './astro-component_Dl5Ek4Rh.mjs';
 import { Q as renderTemplate, y as maybeRenderHead, a4 as addAttribute } from './sequence_Cz06ISpH.mjs';
-import { r as renderComponent } from './entrypoint_BGUmwUHK.mjs';
+import { r as renderComponent } from './entrypoint_wGGFH45s.mjs';
 import { r as renderScript } from './script_C0wet-lX.mjs';
-import { $ as $$AdminLayout } from './AdminLayout_YUFbb85F.mjs';
-import { d as db, c as categories, p as products } from './index_BVNmz_ij.mjs';
+import { $ as $$AdminLayout } from './AdminLayout_CRkeyq15.mjs';
+import { d as db, c as categories, p as products } from './index_BO5qdVM-.mjs';
 import { eq } from 'drizzle-orm';
 
 const $$Index = createComponent(async ($$result, $$props, $$slots) => {

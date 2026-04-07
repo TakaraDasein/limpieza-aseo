@@ -1,8 +1,8 @@
 import { Auth } from '@auth/core';
 import Credentials from '@auth/core/providers/credentials';
-import { d as db, u as users } from './index_BVNmz_ij.mjs';
+import { d as db, u as users } from './index_BO5qdVM-.mjs';
 import { eq } from 'drizzle-orm';
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 
 var setCookie = {exports: {}};
 
@@ -282,7 +282,7 @@ const authConfig = defineConfig({
         if (!user) {
           return null;
         }
-        const isValidPassword = await bcrypt.compare(password, user.password);
+        const isValidPassword = await bcryptjs.compare(password, user.password);
         if (!isValidPassword) {
           return null;
         }

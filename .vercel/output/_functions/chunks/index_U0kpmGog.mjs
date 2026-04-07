@@ -1,9 +1,9 @@
 import { c as createComponent } from './astro-component_Dl5Ek4Rh.mjs';
 import { y as maybeRenderHead, Q as renderTemplate, a4 as addAttribute } from './sequence_Cz06ISpH.mjs';
-import { r as renderComponent } from './entrypoint_BGUmwUHK.mjs';
+import { r as renderComponent } from './entrypoint_wGGFH45s.mjs';
 import { $ as $$Layout } from './Layout_Cdd_i9Up.mjs';
 import { $ as $$Navbar, a as $$Footer, b as $$WhatsAppButton } from './WhatsAppButton_DY_RVNeH.mjs';
-import { d as db, p as products, c as categories } from './index_BVNmz_ij.mjs';
+import { d as db, p as products, c as categories } from './index_BO5qdVM-.mjs';
 
 const $$Hero = createComponent(($$result, $$props, $$slots) => {
   return renderTemplate`${maybeRenderHead()}<section class="relative px-6 py-2 md:py-4 lg:py-8 md:px-12 overflow-hidden" id="home" data-astro-cid-bbe6dxrz> <div class="max-w-screen-2xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center" data-astro-cid-bbe6dxrz> <div class="relative z-10" data-astro-cid-bbe6dxrz> <h1 class="hero-title font-headline text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-extrabold text-primary leading-[1.1] tracking-tighter mb-8" data-astro-cid-bbe6dxrz>

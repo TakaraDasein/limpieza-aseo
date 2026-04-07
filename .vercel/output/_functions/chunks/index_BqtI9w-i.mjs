@@ -1,4 +1,4 @@
-import { d as db, p as products, c as categories } from './index_BVNmz_ij.mjs';
+import { d as db, p as products, c as categories } from './index_BO5qdVM-.mjs';
 import { eq } from 'drizzle-orm';
 
 const GET = async () => {

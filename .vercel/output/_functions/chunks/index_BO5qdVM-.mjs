@@ -47,7 +47,8 @@ const schema = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const client = createClient({
-  url: process.env.DATABASE_URL || "file:local.db"
+  url: process.env.DATABASE_URL || "file:local.db",
+  authToken: process.env.DATABASE_AUTH_TOKEN
 });
 const db = drizzle(client, { schema });
 

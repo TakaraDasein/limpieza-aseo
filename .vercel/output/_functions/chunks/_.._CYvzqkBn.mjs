@@ -1,4 +1,4 @@
-import { A as AstroAuth } from './server_BFgY1CG7.mjs';
+import { A as AstroAuth } from './server_B7A4FRAC.mjs';
 
 const prerender = false;
 const { GET, POST } = AstroAuth();

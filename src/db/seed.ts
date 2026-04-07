@@ -2,7 +2,7 @@ import { createClient } from '@libsql/client';
 import { drizzle } from 'drizzle-orm/libsql';
 import { migrate } from 'drizzle-orm/libsql/migrator';
 import { eq } from 'drizzle-orm';
-import bcrypt from 'bcrypt';
+import bcryptjs from 'bcryptjs';
 import * as schema from './schema';
 import { categories as catalogCategories, products as catalogProducts } from '../data/catalog';
 
@@ -33,7 +33,7 @@ async function seed() {
       .limit(1);
 
     if (existingAdmin.length === 0) {
-      const hashedPassword = await bcrypt.hash('Admin123!', SALT_ROUNDS);
+      const hashedPassword = await bcryptjs.hash('Admin123!', SALT_ROUNDS);
       await db.insert(schema.users).values({
         email: 'admin@misterlya.com',
         password: hashedPassword,

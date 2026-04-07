@@ -1,5 +1,5 @@
 import { a8 as defineMiddleware, ah as sequence } from './chunks/sequence_Cz06ISpH.mjs';
-import { g as getSession } from './chunks/server_BFgY1CG7.mjs';
+import { g as getSession } from './chunks/server_B7A4FRAC.mjs';
 
 const onRequest$1 = defineMiddleware(async (context, next) => {
   const { pathname } = context.url;

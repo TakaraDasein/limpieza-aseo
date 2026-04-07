@@ -1,8 +1,8 @@
 import { c as createComponent } from './astro-component_Dl5Ek4Rh.mjs';
 import { Q as renderTemplate, b9 as defineScriptVars, a4 as addAttribute, y as maybeRenderHead } from './sequence_Cz06ISpH.mjs';
-import { r as renderComponent } from './entrypoint_BGUmwUHK.mjs';
-import { $ as $$AdminLayout } from './AdminLayout_YUFbb85F.mjs';
-import { d as db, p as products, c as categories } from './index_BVNmz_ij.mjs';
+import { r as renderComponent } from './entrypoint_wGGFH45s.mjs';
+import { $ as $$AdminLayout } from './AdminLayout_CRkeyq15.mjs';
+import { d as db, p as products, c as categories } from './index_BO5qdVM-.mjs';
 import { eq } from 'drizzle-orm';
 
 var __freeze = Object.freeze;
