@@ -11,7 +11,8 @@ export default defineConfig({
   adapter: vercel({
     webAnalytics: {
       enabled: true
-    }
+    },
+    edgeMiddleware: false
   }),
   integrations: [auth()],
   vite: {
@@ -20,5 +21,8 @@ export default defineConfig({
         plugins: [tailwindcss, autoprefixer],
       },
     },
+    ssr: {
+      external: ['bcryptjs']
+    }
   },
 });
