@@ -24,85 +24,92 @@ const categoryColors: Record<string, string> = {
 >
   <div class="max-w-screen-2xl mx-auto px-6 md:px-12">
     
-    <!-- Search and Price Filter -->
-    <div class="mb-12 max-w-2xl mx-auto">
-      <!-- Search Bar -->
-      <div class="relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden">
-        <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
-          <span class="material-symbols-outlined text-2xl text-on-surface-variant">search</span>
-        </div>
-        <input
-          type="text"
-          id="product-search"
-          placeholder="Buscar productos por nombre..."
-          class="w-full pl-16 pr-16 py-5 text-lg bg-transparent focus:outline-none focus:ring-0 text-on-surface placeholder-on-surface-variant"
-        />
-        <button
-          id="clear-search"
-          class="absolute inset-y-0 right-0 pr-6 flex items-center opacity-0 pointer-events-none transition-opacity duration-200"
-          aria-label="Limpiar búsqueda"
-        >
-          <span class="material-symbols-outlined text-2xl text-on-surface-variant hover:text-primary transition-colors cursor-pointer">close</span>
-        </button>
+    <!-- Hero Section with Search and Filters -->
+    <div class="mb-16">
+      <!-- Hero Header -->
+      <div class="text-center mb-8">
+        <h1 class="font-headline text-4xl md:text-6xl font-bold text-primary mb-4">
+          Nuestro Catálogo
+        </h1>
+        <p class="text-lg text-on-surface-variant max-w-2xl mx-auto">
+          Encuentra los mejores productos de limpieza y aseo. Filtra por categoría o busca directamente.
+        </p>
       </div>
-      
-      <!-- Price Range Filter -->
-      <div class="mt-4 bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden p-6">
-        <div class="flex items-center justify-between mb-4">
-          <div class="flex items-center gap-2">
-            <span class="material-symbols-outlined text-2xl text-on-surface-variant">payments</span>
-            <h3 class="font-semibold text-on-surface">Rango de Precio</h3>
-          </div>
-          <button
-            id="clear-price"
-            class="text-sm text-primary hover:text-secondary transition-colors font-medium opacity-0 pointer-events-none"
-            aria-label="Limpiar filtro de precio"
-          >
-            Limpiar
-          </button>
-        </div>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-          <!-- Min Price Input -->
+
+      <!-- Filters Container -->
+      <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl p-6 md:p-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <!-- Search Bar -->
           <div class="relative">
-            <label for="min-price" class="text-xs font-semibold text-on-surface-variant mb-2 block">Precio Mínimo</label>
+            <label for="product-search" class="text-xs font-bold text-on-surface-variant mb-2 block uppercase tracking-wide">
+              Buscar Producto
+            </label>
             <div class="relative">
-              <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-on-surface-variant pointer-events-none">$</span>
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <span class="material-symbols-outlined text-xl text-on-surface-variant">search</span>
+              </div>
               <input
-                type="number"
-                id="min-price"
-                placeholder="0"
-                min="0"
-                step="1000"
-                class="w-full pl-8 pr-4 py-3 border-2 border-surface-container rounded-xl focus:border-primary focus:outline-none text-on-surface transition-all"
+                type="text"
+                id="product-search"
+                placeholder="Nombre del producto..."
+                class="w-full pl-12 pr-12 py-3.5 bg-surface-container rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-on-surface placeholder-on-surface-variant transition-all"
               />
+              <button
+                id="clear-search"
+                class="absolute inset-y-0 right-0 pr-4 flex items-center opacity-0 pointer-events-none transition-opacity duration-200"
+                aria-label="Limpiar búsqueda"
+              >
+                <span class="material-symbols-outlined text-xl text-on-surface-variant hover:text-primary transition-colors cursor-pointer">close</span>
+              </button>
             </div>
           </div>
           
-          <!-- Max Price Input -->
+          <!-- Category Dropdown -->
           <div class="relative">
-            <label for="max-price" class="text-xs font-semibold text-on-surface-variant mb-2 block">Precio Máximo</label>
+            <label for="category-filter" class="text-xs font-bold text-on-surface-variant mb-2 block uppercase tracking-wide">
+              Filtrar por Categoría
+            </label>
             <div class="relative">
-              <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-on-surface-variant pointer-events-none">$</span>
-              <input
-                type="number"
-                id="max-price"
-                placeholder="∞"
-                min="0"
-                step="1000"
-                class="w-full pl-8 pr-4 py-3 border-2 border-surface-container rounded-xl focus:border-primary focus:outline-none text-on-surface transition-all"
-              />
+              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                <span class="material-symbols-outlined text-xl text-on-surface-variant">category</span>
+              </div>
+              <select
+                id="category-filter"
+                class="w-full pl-12 pr-10 py-3.5 bg-surface-container rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-on-surface appearance-none cursor-pointer transition-all"
+              >
+                <option value="">Todas las categorías</option>
+                {categories.map(category => (
+                  <option value={category.id}>{category.name}</option>
+                ))}
+              </select>
+              <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+                <span class="material-symbols-outlined text-xl text-on-surface-variant">expand_more</span>
+              </div>
             </div>
+          </div>
+          
+        </div>
+        
+        <!-- Results Info -->
+        <div id="search-results-info" class="mt-6 text-center transition-all duration-200 opacity-0">
+          <div class="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full">
+            <span class="material-symbols-outlined text-sm">filter_alt</span>
+            <span class="font-semibold text-sm" id="results-text"></span>
           </div>
         </div>
         
-        <!-- Current Price Range Display -->
-        <div id="price-range-display" class="text-sm text-center text-on-surface-variant opacity-0 transition-opacity duration-200 py-2 px-4 bg-surface-container rounded-lg">
-          Filtrando: <span class="font-semibold text-primary" id="price-range-text"></span>
+        <!-- Active Filters -->
+        <div id="active-filters" class="mt-4 flex flex-wrap gap-2 opacity-0 transition-opacity duration-200">
+          <button
+            id="clear-all-filters"
+            class="inline-flex items-center gap-1 bg-red-50 text-red-600 px-3 py-1.5 rounded-full text-sm font-semibold hover:bg-red-100 transition-colors"
+          >
+            <span class="material-symbols-outlined text-sm">close</span>
+            <span>Limpiar todo</span>
+          </button>
         </div>
       </div>
-      
-      <div id="search-results-info" class="mt-3 text-center text-sm text-on-surface-variant opacity-0 transition-opacity duration-200"></div>
     </div>
     
     <!-- Products by Category -->
@@ -115,7 +122,6 @@ const categoryColors: Record<string, string> = {
           class="category-section mb-20 transition-all duration-500"
           id={`category-${category.id}`}
           data-category={category.id}
-          style="display: none;"
         >
           <!-- Category Header with animated background -->
           <div class={`relative rounded-3xl p-8 md:p-12 mb-10 overflow-hidden bg-gradient-to-br ${bgColor}`}>
@@ -233,22 +239,18 @@ const categoryColors: Record<string, string> = {
 </section>
 
 <script>
-  // Reset product card animations when category changes
   document.addEventListener('DOMContentLoaded', () => {
-    // Remove fade-in class from all products initially
-    document.querySelectorAll('.product-card').forEach(card => {
-      card.classList.remove('fade-in-up');
-    });
-
-    // Search and filter functionality
+    // Elements
     const searchInput = document.getElementById('product-search') as HTMLInputElement;
-    const clearButton = document.getElementById('clear-search') as HTMLButtonElement;
+    const clearSearchBtn = document.getElementById('clear-search') as HTMLButtonElement;
+    const categoryFilter = document.getElementById('category-filter') as HTMLSelectElement;
     const searchResultsInfo = document.getElementById('search-results-info') as HTMLDivElement;
-    const minPriceInput = document.getElementById('min-price') as HTMLInputElement;
-    const maxPriceInput = document.getElementById('max-price') as HTMLInputElement;
-    const clearPriceButton = document.getElementById('clear-price') as HTMLButtonElement;
-    const priceRangeDisplay = document.getElementById('price-range-display') as HTMLDivElement;
-    const priceRangeText = document.getElementById('price-range-text') as HTMLSpanElement;
+    const resultsText = document.getElementById('results-text') as HTMLSpanElement;
+    const activeFilters = document.getElementById('active-filters') as HTMLDivElement;
+    const clearAllBtn = document.getElementById('clear-all-filters') as HTMLButtonElement;
+    const categorySections = document.querySelectorAll('.category-section');
+
+    let currentSearchTerm = '';
     let currentCategory = '';
 
     // Format price in COP
@@ -256,140 +258,120 @@ const categoryColors: Record<string, string> = {
       return `$${(price / 1000).toFixed(3).replace('.', ',')} COP`;
     }
 
-    // Get current active category
-    function getCurrentCategory(): string {
-      const activeSection = document.querySelector('.category-section[style*="display: block"]');
-      return activeSection ? activeSection.getAttribute('data-category') || '' : '';
-    }
+    // Update visible categories based on filters
+    function updateCategoryVisibility() {
+      let totalVisible = 0;
+      let totalProducts = 0;
 
-    // Update price range display
-    function updatePriceRangeDisplay(minPrice: number | null, maxPrice: number | null) {
-      if (minPrice === null && maxPrice === null) {
-        priceRangeDisplay.style.opacity = '0';
-        clearPriceButton.style.opacity = '0';
-        clearPriceButton.classList.add('pointer-events-none');
-        return;
-      }
-
-      let rangeText = '';
-      if (minPrice !== null && maxPrice !== null) {
-        rangeText = `${formatPrice(minPrice)} - ${formatPrice(maxPrice)}`;
-      } else if (minPrice !== null) {
-        rangeText = `Desde ${formatPrice(minPrice)}`;
-      } else if (maxPrice !== null) {
-        rangeText = `Hasta ${formatPrice(maxPrice)}`;
-      }
-
-      priceRangeText.textContent = rangeText;
-      priceRangeDisplay.style.opacity = '1';
-      clearPriceButton.style.opacity = '1';
-      clearPriceButton.classList.remove('pointer-events-none');
-    }
-
-    // Filter products based on search term and price range
-    function filterProducts(searchTerm: string, minPrice: number | null, maxPrice: number | null) {
-      const normalizedSearch = searchTerm.toLowerCase().trim();
-      currentCategory = getCurrentCategory();
-      
-      const currentSection = document.querySelector(`.category-section[data-category="${currentCategory}"]`);
-      if (!currentSection) return;
-
-      const productCards = currentSection.querySelectorAll('.product-card');
-      let visibleCount = 0;
-      let totalCount = productCards.length;
-
-      productCards.forEach((card) => {
-        const productName = card.getAttribute('data-product-name') || '';
-        const productDescription = card.getAttribute('data-product-description') || '';
-        const productPrice = parseFloat(card.getAttribute('data-product-price') || '0');
+      categorySections.forEach(section => {
+        const sectionElement = section as HTMLElement;
+        const categoryId = section.getAttribute('data-category') || '';
+        const productCards = section.querySelectorAll('.product-card');
         
-        // Check if search term matches name or description
-        const searchMatches = normalizedSearch === '' || 
-                       productName.includes(normalizedSearch) || 
-                       productDescription.includes(normalizedSearch);
-
-        // Check if price is within range
-        const priceMatches = (minPrice === null || productPrice >= minPrice) &&
-                            (maxPrice === null || productPrice <= maxPrice);
-
-        if (searchMatches && priceMatches) {
-          (card as HTMLElement).style.display = '';
-          visibleCount++;
+        // Check if this category should be visible
+        const categoryMatches = !currentCategory || categoryId === currentCategory;
+        
+        if (categoryMatches) {
+          let visibleInCategory = 0;
+          
+          productCards.forEach(card => {
+            const cardElement = card as HTMLElement;
+            const productName = card.getAttribute('data-product-name') || '';
+            const productDescription = card.getAttribute('data-product-description') || '';
+            
+            // Check if search term matches
+            const searchMatches = !currentSearchTerm || 
+                                productName.includes(currentSearchTerm) || 
+                                productDescription.includes(currentSearchTerm);
+            
+            if (searchMatches) {
+              cardElement.style.display = '';
+              visibleInCategory++;
+              totalVisible++;
+            } else {
+              cardElement.style.display = 'none';
+            }
+            
+            totalProducts++;
+          });
+          
+          // Show/hide category section based on visible products
+          if (visibleInCategory > 0) {
+            sectionElement.style.display = 'block';
+            // Add fade-in animation to visible cards
+            setTimeout(() => {
+              section.querySelectorAll('.product-card[style*="display: block"], .product-card:not([style*="display: none"])').forEach((card, index) => {
+                const cardElement = card as HTMLElement;
+                cardElement.style.opacity = '0';
+                cardElement.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                  cardElement.style.transition = 'all 0.5s ease-out';
+                  cardElement.style.opacity = '1';
+                  cardElement.style.transform = 'translateY(0)';
+                }, index * 50);
+              });
+            }, 100);
+          } else {
+            sectionElement.style.display = 'none';
+          }
         } else {
-          (card as HTMLElement).style.display = 'none';
+          sectionElement.style.display = 'none';
         }
       });
 
-      // Update search results info
-      const hasFilters = normalizedSearch !== '' || minPrice !== null || maxPrice !== null;
+      // Update results info
+      const hasFilters = currentSearchTerm || currentCategory;
       if (hasFilters) {
-        searchResultsInfo.textContent = `${visibleCount} de ${totalCount} productos encontrados`;
+        resultsText.textContent = `${totalVisible} productos encontrados`;
         searchResultsInfo.style.opacity = '1';
+        activeFilters.style.opacity = '1';
       } else {
         searchResultsInfo.style.opacity = '0';
+        activeFilters.style.opacity = '0';
       }
 
-      // Show/hide clear search button
-      if (normalizedSearch !== '') {
-        clearButton.style.opacity = '1';
-        clearButton.classList.remove('pointer-events-none');
+      // Update clear search button visibility
+      if (currentSearchTerm) {
+        clearSearchBtn.style.opacity = '1';
+        clearSearchBtn.classList.remove('pointer-events-none');
       } else {
-        clearButton.style.opacity = '0';
-        clearButton.classList.add('pointer-events-none');
+        clearSearchBtn.style.opacity = '0';
+        clearSearchBtn.classList.add('pointer-events-none');
       }
-
-      // Update price range display
-      updatePriceRangeDisplay(minPrice, maxPrice);
     }
 
-    // Get current filter values and apply
-    function applyFilters() {
-      const searchTerm = searchInput?.value || '';
-      const minPrice = minPriceInput?.value ? parseFloat(minPriceInput.value) : null;
-      const maxPrice = maxPriceInput?.value ? parseFloat(maxPriceInput.value) : null;
-      filterProducts(searchTerm, minPrice, maxPrice);
-    }
-
-    // Search input event listener
-    searchInput?.addEventListener('input', () => {
-      applyFilters();
+    // Search input handler
+    searchInput?.addEventListener('input', (e) => {
+      currentSearchTerm = (e.target as HTMLInputElement).value.toLowerCase().trim();
+      updateCategoryVisibility();
     });
 
-    // Price input event listeners
-    minPriceInput?.addEventListener('input', () => {
-      applyFilters();
-    });
-
-    maxPriceInput?.addEventListener('input', () => {
-      applyFilters();
+    // Category filter handler
+    categoryFilter?.addEventListener('change', (e) => {
+      currentCategory = (e.target as HTMLSelectElement).value;
+      updateCategoryVisibility();
     });
 
     // Clear search button
-    clearButton?.addEventListener('click', () => {
+    clearSearchBtn?.addEventListener('click', () => {
       searchInput.value = '';
-      applyFilters();
+      currentSearchTerm = '';
+      updateCategoryVisibility();
       searchInput.focus();
     });
 
-    // Clear price filter button
-    clearPriceButton?.addEventListener('click', () => {
-      minPriceInput.value = '';
-      maxPriceInput.value = '';
-      applyFilters();
+    // Clear all filters button
+    clearAllBtn?.addEventListener('click', () => {
+      searchInput.value = '';
+      categoryFilter.value = '';
+      currentSearchTerm = '';
+      currentCategory = '';
+      updateCategoryVisibility();
     });
 
-    // Re-apply search filter when category changes
-    const observer = new MutationObserver(() => {
-      const newCategory = getCurrentCategory();
-      if (newCategory !== currentCategory) {
-        currentCategory = newCategory;
-        applyFilters();
-      }
-    });
-
-    // Observe changes to category sections display
-    document.querySelectorAll('.category-section').forEach(section => {
-      observer.observe(section, { attributes: true, attributeFilter: ['style'] });
+    // Initial display: show all categories
+    categorySections.forEach(section => {
+      (section as HTMLElement).style.display = 'block';
     });
 
     // Quantity selector functionality
@@ -468,44 +450,19 @@ const categoryColors: Record<string, string> = {
     overflow: hidden;
   }
   
-  .product-card {
-    opacity: 0;
-    transform: translateY(20px);
+  /* Smooth category transitions */
+  .category-section {
+    animation: fadeIn 0.5s ease-out;
   }
   
-  .product-card.fade-in-up {
-    animation: fadeInUp 0.5s ease-out forwards;
-  }
-  
-  @keyframes fadeInUp {
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
     to {
       opacity: 1;
       transform: translateY(0);
     }
-  }
-  
-  /* Dynamic backgrounds based on active category */
-  #products-section[data-active-category="escobas"] {
-    background: linear-gradient(to bottom right, rgba(239, 246, 255, 0.5), var(--color-surface), rgba(239, 246, 255, 0.5));
-  }
-  
-  #products-section[data-active-category="cepillos"] {
-    background: linear-gradient(to bottom right, rgba(250, 245, 255, 0.5), var(--color-surface), rgba(250, 245, 255, 0.5));
-  }
-  
-  #products-section[data-active-category="traperos"] {
-    background: linear-gradient(to bottom right, rgba(240, 253, 244, 0.5), var(--color-surface), rgba(240, 253, 244, 0.5));
-  }
-  
-  #products-section[data-active-category="jabones"] {
-    background: linear-gradient(to bottom right, rgba(236, 254, 255, 0.5), var(--color-surface), rgba(236, 254, 255, 0.5));
-  }
-  
-  #products-section[data-active-category="esponjas"] {
-    background: linear-gradient(to bottom right, rgba(254, 252, 232, 0.5), var(--color-surface), rgba(254, 252, 232, 0.5));
-  }
-  
-  #products-section[data-active-category="varios"] {
-    background: linear-gradient(to bottom right, rgba(253, 242, 248, 0.5), var(--color-surface), rgba(253, 242, 248, 0.5));
   }
 </style>

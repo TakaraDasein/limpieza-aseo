@@ -1,34 +1,79 @@
 ---
 ---
 
-<nav class="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl shadow-[0px_10px_30px_rgba(0,0,0,0.03)] border-b border-surface-container-highest/50">
+<nav class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-xl shadow-[0px_10px_30px_rgba(0,0,0,0.05)] border-b border-surface-container-highest/50">
   <div class="flex justify-between items-center px-6 md:px-12 py-5 max-w-screen-2xl mx-auto font-['Plus_Jakarta_Sans'] tracking-tight text-sm font-semibold">
-    <a href="/" class="flex items-center">
+    <a href="/" class="flex items-center z-50">
       <img src="/logo-h.png" alt="Mister LyA" class="h-12 w-auto" />
     </a>
     
     <div class="hidden md:flex items-center gap-10">
-      <a class="text-slate-500 hover:text-primary transition-colors" href="/">Inicio</a>
-      <a class="text-slate-500 hover:text-primary transition-colors" href="/catalogo">Catálogo</a>
-      <a class="text-slate-500 hover:text-primary transition-colors" href="/#mision">Nuestra Esencia</a>
-      <a class="text-slate-500 hover:text-primary transition-colors" href="https://wa.me/573115412230" target="_blank">Contacto</a>
+      <a class="text-slate-600 hover:text-primary transition-colors relative group" href="/">
+        <span>Inicio</span>
+        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <a class="text-slate-600 hover:text-primary transition-colors relative group" href="/catalogo">
+        <span>Catálogo</span>
+        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <a class="text-slate-600 hover:text-primary transition-colors relative group" href="/#mision">
+        <span>Nuestra Esencia</span>
+        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+      </a>
+      <a class="text-slate-600 hover:text-primary transition-colors relative group flex items-center gap-1" href="https://wa.me/573115412230" target="_blank">
+        <span>Contacto</span>
+        <span class="material-symbols-outlined text-sm">open_in_new</span>
+        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
+      </a>
     </div>
     
     <div class="flex items-center gap-6">
       <!-- Mobile menu button -->
-      <button class="md:hidden material-symbols-outlined text-primary transition-transform duration-300" id="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
-        menu
+      <button class="md:hidden relative w-10 h-10 flex flex-col items-center justify-center gap-1.5 z-50" id="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+        <span class="hamburger-line w-6 h-0.5 bg-primary transition-all duration-300"></span>
+        <span class="hamburger-line w-6 h-0.5 bg-primary transition-all duration-300"></span>
+        <span class="hamburger-line w-6 h-0.5 bg-primary transition-all duration-300"></span>
       </button>
     </div>
   </div>
   
-  <!-- Mobile menu -->
-  <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-surface-container-highest transition-all duration-300 ease-in-out overflow-hidden">
-    <div class="flex flex-col gap-4 px-6 py-4">
-      <a class="text-slate-500 hover:text-primary transition-colors py-2" href="/">Inicio</a>
-      <a class="text-slate-500 hover:text-primary transition-colors py-2" href="/catalogo">Catálogo</a>
-      <a class="text-slate-500 hover:text-primary transition-colors py-2" href="/#mision">Nuestra Esencia</a>
-      <a class="text-slate-500 hover:text-primary transition-colors py-2" href="https://wa.me/573115412230" target="_blank">Contacto</a>
+  <!-- Mobile menu overlay -->
+  <div id="mobile-menu" class="md:hidden fixed inset-0 bg-black/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-40">
+    <!-- Slide-in menu panel -->
+    <div id="mobile-menu-panel" class="absolute right-0 top-0 h-full w-80 bg-white shadow-2xl transform translate-x-full transition-transform duration-300">
+      <div class="flex flex-col h-full pt-24 px-8">
+        <!-- Menu items -->
+        <div class="flex flex-col gap-2">
+          <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary transition-all py-4 border-b border-surface-container-highest" href="/">
+            <span class="material-symbols-outlined text-2xl text-primary">home</span>
+            <span class="font-semibold text-lg">Inicio</span>
+            <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+          <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary transition-all py-4 border-b border-surface-container-highest" href="/catalogo">
+            <span class="material-symbols-outlined text-2xl text-primary">grid_view</span>
+            <span class="font-semibold text-lg">Catálogo</span>
+            <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+          <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary transition-all py-4 border-b border-surface-container-highest" href="/#mision">
+            <span class="material-symbols-outlined text-2xl text-primary">stars</span>
+            <span class="font-semibold text-lg">Nuestra Esencia</span>
+            <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform">arrow_forward</span>
+          </a>
+          <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary transition-all py-4 border-b border-surface-container-highest" href="https://wa.me/573115412230" target="_blank">
+            <span class="material-symbols-outlined text-2xl text-green-600">chat</span>
+            <span class="font-semibold text-lg">Contacto</span>
+            <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform">open_in_new</span>
+          </a>
+        </div>
+        
+        <!-- WhatsApp CTA -->
+        <div class="mt-auto mb-8">
+          <a href="https://wa.me/573115412230" target="_blank" class="flex items-center justify-center gap-3 bg-green-600 text-white rounded-xl py-4 px-6 hover:bg-green-700 transition-all shadow-lg hover:shadow-xl">
+            <span class="material-symbols-outlined text-2xl">phone</span>
+            <span class="font-bold">311 541 2230</span>
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 </nav>
@@ -36,27 +81,66 @@
 <script>
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');
   const mobileMenu = document.getElementById('mobile-menu');
+  const mobileMenuPanel = document.getElementById('mobile-menu-panel');
+  const hamburgerLines = mobileMenuBtn?.querySelectorAll('.hamburger-line');
   
-  mobileMenuBtn?.addEventListener('click', () => {
-    const isHidden = mobileMenu?.classList.contains('hidden');
-    mobileMenu?.classList.toggle('hidden');
-    mobileMenuBtn?.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+  function toggleMenu() {
+    const isOpen = mobileMenu?.classList.contains('opacity-100');
     
-    // Toggle icon between menu and close
-    if (mobileMenuBtn) {
-      mobileMenuBtn.textContent = isHidden ? 'close' : 'menu';
+    if (isOpen) {
+      // Close menu
+      mobileMenu?.classList.remove('opacity-100');
+      mobileMenu?.classList.add('opacity-0', 'pointer-events-none');
+      mobileMenuPanel?.classList.remove('translate-x-0');
+      mobileMenuPanel?.classList.add('translate-x-full');
+      mobileMenuBtn?.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+      
+      // Animate hamburger back to normal
+      if (hamburgerLines) {
+        hamburgerLines[0].classList.remove('rotate-45', 'translate-y-2');
+        hamburgerLines[1].classList.remove('opacity-0');
+        hamburgerLines[2].classList.remove('-rotate-45', '-translate-y-2');
+      }
+    } else {
+      // Open menu
+      mobileMenu?.classList.remove('opacity-0', 'pointer-events-none');
+      mobileMenu?.classList.add('opacity-100');
+      mobileMenuPanel?.classList.remove('translate-x-full');
+      mobileMenuPanel?.classList.add('translate-x-0');
+      mobileMenuBtn?.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+      
+      // Animate hamburger to X
+      if (hamburgerLines) {
+        hamburgerLines[0].classList.add('rotate-45', 'translate-y-2');
+        hamburgerLines[1].classList.add('opacity-0');
+        hamburgerLines[2].classList.add('-rotate-45', '-translate-y-2');
+      }
+    }
+  }
+  
+  mobileMenuBtn?.addEventListener('click', toggleMenu);
+  
+  // Close menu when clicking overlay
+  mobileMenu?.addEventListener('click', (e) => {
+    if (e.target === mobileMenu) {
+      toggleMenu();
     }
   });
   
   // Close menu when clicking on a link
-  const menuLinks = mobileMenu?.querySelectorAll('a');
+  const menuLinks = mobileMenuPanel?.querySelectorAll('a');
   menuLinks?.forEach(link => {
     link.addEventListener('click', () => {
-      mobileMenu?.classList.add('hidden');
-      mobileMenuBtn?.setAttribute('aria-expanded', 'false');
-      if (mobileMenuBtn) {
-        mobileMenuBtn.textContent = 'menu';
-      }
+      toggleMenu();
     });
+  });
+  
+  // Close menu on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && mobileMenu?.classList.contains('opacity-100')) {
+      toggleMenu();
+    }
   });
 </script>
