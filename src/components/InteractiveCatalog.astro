@@ -1,5 +1,10 @@
 ---
-import { categories, products } from '../data/catalog';
+interface Props {
+	products: any[];
+	categories: any[];
+}
+
+const { products, categories } = Astro.props;
 
 // Define background colors for each category
 const categoryColors: Record<string, string> = {
@@ -102,7 +107,7 @@ const categoryColors: Record<string, string> = {
     
     <!-- Products by Category -->
     {categories.map((category, index) => {
-      const categoryProducts = products.filter(p => p.category === category.id);
+      const categoryProducts = products.filter(p => p.categoryId === category.id);
       const bgColor = categoryColors[category.id] || 'from-gray-50 via-gray-100 to-gray-50';
       
       return (

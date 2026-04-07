@@ -1,5 +1,10 @@
 ---
-import { categories, products } from '../data/catalog';
+interface Props {
+	products: any[];
+	categories: any[];
+}
+
+const { products, categories } = Astro.props;
 ---
 
 <section class="py-20 bg-surface-container-low" id="catalog">
@@ -29,7 +34,7 @@ import { categories, products } from '../data/catalog';
 
     <!-- Products by Category -->
     {categories.map(category => {
-      const categoryProducts = products.filter(p => p.category === category.id);
+      const categoryProducts = products.filter(p => p.categoryId === category.id);
       
       return (
         <div class="category-section mb-20" data-category={category.id}>
