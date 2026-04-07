@@ -17,100 +17,132 @@ const categoryColors: Record<string, string> = {
 };
 ---
 
+<!-- Hero Section with Title, Filters, and Categories -->
+<section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary via-primary-container to-secondary">
+  <!-- Animated background shapes -->
+  <div class="absolute inset-0 overflow-hidden">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-secondary-fixed/20 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-primary-fixed/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+  </div>
+  
+  <div class="max-w-screen-2xl mx-auto px-6 md:px-12 py-16 md:py-20 relative z-10 w-full">
+    <!-- Title and Description -->
+    <div class="text-center mb-12">
+      <h1 class="font-headline text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tighter">
+        Nuestro Catálogo
+      </h1>
+      <p class="text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-8">
+        Explora nuestra colección completa de productos de limpieza profesional. Filtra por categoría o busca directamente lo que necesitas.
+      </p>
+    </div>
+
+    <!-- Filters Container -->
+    <div class="max-w-5xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 mb-12">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        
+        <!-- Search Bar -->
+        <div class="relative">
+          <label for="product-search" class="text-xs font-bold text-on-surface-variant mb-2 block uppercase tracking-wide">
+            Buscar Producto
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-xl text-on-surface-variant">search</span>
+            </div>
+            <input
+              type="text"
+              id="product-search"
+              placeholder="Nombre del producto..."
+              class="w-full pl-12 pr-12 py-3.5 bg-surface-container rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-on-surface placeholder-on-surface-variant transition-all"
+            />
+            <button
+              id="clear-search"
+              class="absolute inset-y-0 right-0 pr-4 flex items-center opacity-0 pointer-events-none transition-opacity duration-200"
+              aria-label="Limpiar búsqueda"
+            >
+              <span class="material-symbols-outlined text-xl text-on-surface-variant hover:text-primary transition-colors cursor-pointer">close</span>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Category Dropdown -->
+        <div class="relative">
+          <label for="category-filter" class="text-xs font-bold text-on-surface-variant mb-2 block uppercase tracking-wide">
+            Filtrar por Categoría
+          </label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-xl text-on-surface-variant">category</span>
+            </div>
+            <select
+              id="category-filter"
+              class="w-full pl-12 pr-10 py-3.5 bg-surface-container rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-on-surface appearance-none cursor-pointer transition-all"
+            >
+              <option value="">Todas las categorías</option>
+              {categories.map(category => (
+                <option value={category.id}>{category.name}</option>
+              ))}
+            </select>
+            <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
+              <span class="material-symbols-outlined text-xl text-on-surface-variant">expand_more</span>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+      
+      <!-- Results Info -->
+      <div id="search-results-info" class="text-center transition-all duration-200 opacity-0">
+        <div class="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full">
+          <span class="material-symbols-outlined text-sm">filter_alt</span>
+          <span class="font-semibold text-sm" id="results-text"></span>
+        </div>
+      </div>
+      
+      <!-- Active Filters -->
+      <div id="active-filters" class="mt-4 flex flex-wrap gap-2 justify-center opacity-0 transition-opacity duration-200">
+        <button
+          id="clear-all-filters"
+          class="inline-flex items-center gap-1 bg-red-50 text-red-600 px-3 py-1.5 rounded-full text-sm font-semibold hover:bg-red-100 transition-colors"
+        >
+          <span class="material-symbols-outlined text-sm">close</span>
+          <span>Limpiar filtros</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Category Visual Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 md:gap-4">
+      {categories.map((category) => (
+        <button 
+          class="category-card group relative p-4 md:p-6 bg-white/95 backdrop-blur-sm rounded-2xl border-2 border-white shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-1"
+          data-category={category.id}
+        >
+          <div class="flex flex-col items-center gap-3">
+            <div class="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+              <span class="material-symbols-outlined text-3xl md:text-4xl text-primary">{category.icon}</span>
+            </div>
+            <h3 class="font-bold text-xs md:text-sm text-primary text-center group-hover:scale-105 transition-transform leading-tight">
+              {category.name}
+            </h3>
+          </div>
+          
+          <!-- Selection indicator -->
+          <div class="category-indicator absolute -top-1 -right-1 w-6 h-6 bg-primary rounded-full flex items-center justify-center opacity-0 scale-0 transition-all duration-300">
+            <span class="material-symbols-outlined text-white text-sm">check</span>
+          </div>
+        </button>
+      ))}
+    </div>
+  </div>
+</section>
+<!-- Products Section -->
 <section 
   class="py-16 transition-all duration-700 bg-gradient-to-br from-surface via-surface-container-low to-surface" 
   id="products-section"
   data-active-category=""
 >
   <div class="max-w-screen-2xl mx-auto px-6 md:px-12">
-    
-    <!-- Hero Section with Search and Filters -->
-    <div class="mb-16">
-      <!-- Hero Header -->
-      <div class="text-center mb-8">
-        <h1 class="font-headline text-4xl md:text-6xl font-bold text-primary mb-4">
-          Nuestro Catálogo
-        </h1>
-        <p class="text-lg text-on-surface-variant max-w-2xl mx-auto">
-          Encuentra los mejores productos de limpieza y aseo. Filtra por categoría o busca directamente.
-        </p>
-      </div>
-
-      <!-- Filters Container -->
-      <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl p-6 md:p-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          
-          <!-- Search Bar -->
-          <div class="relative">
-            <label for="product-search" class="text-xs font-bold text-on-surface-variant mb-2 block uppercase tracking-wide">
-              Buscar Producto
-            </label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <span class="material-symbols-outlined text-xl text-on-surface-variant">search</span>
-              </div>
-              <input
-                type="text"
-                id="product-search"
-                placeholder="Nombre del producto..."
-                class="w-full pl-12 pr-12 py-3.5 bg-surface-container rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-on-surface placeholder-on-surface-variant transition-all"
-              />
-              <button
-                id="clear-search"
-                class="absolute inset-y-0 right-0 pr-4 flex items-center opacity-0 pointer-events-none transition-opacity duration-200"
-                aria-label="Limpiar búsqueda"
-              >
-                <span class="material-symbols-outlined text-xl text-on-surface-variant hover:text-primary transition-colors cursor-pointer">close</span>
-              </button>
-            </div>
-          </div>
-          
-          <!-- Category Dropdown -->
-          <div class="relative">
-            <label for="category-filter" class="text-xs font-bold text-on-surface-variant mb-2 block uppercase tracking-wide">
-              Filtrar por Categoría
-            </label>
-            <div class="relative">
-              <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                <span class="material-symbols-outlined text-xl text-on-surface-variant">category</span>
-              </div>
-              <select
-                id="category-filter"
-                class="w-full pl-12 pr-10 py-3.5 bg-surface-container rounded-xl focus:outline-none focus:ring-2 focus:ring-primary text-on-surface appearance-none cursor-pointer transition-all"
-              >
-                <option value="">Todas las categorías</option>
-                {categories.map(category => (
-                  <option value={category.id}>{category.name}</option>
-                ))}
-              </select>
-              <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
-                <span class="material-symbols-outlined text-xl text-on-surface-variant">expand_more</span>
-              </div>
-            </div>
-          </div>
-          
-        </div>
-        
-        <!-- Results Info -->
-        <div id="search-results-info" class="mt-6 text-center transition-all duration-200 opacity-0">
-          <div class="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full">
-            <span class="material-symbols-outlined text-sm">filter_alt</span>
-            <span class="font-semibold text-sm" id="results-text"></span>
-          </div>
-        </div>
-        
-        <!-- Active Filters -->
-        <div id="active-filters" class="mt-4 flex flex-wrap gap-2 opacity-0 transition-opacity duration-200">
-          <button
-            id="clear-all-filters"
-            class="inline-flex items-center gap-1 bg-red-50 text-red-600 px-3 py-1.5 rounded-full text-sm font-semibold hover:bg-red-100 transition-colors"
-          >
-            <span class="material-symbols-outlined text-sm">close</span>
-            <span>Limpiar todo</span>
-          </button>
-        </div>
-      </div>
-    </div>
     
     <!-- Products by Category -->
     {categories.map((category, index) => {
@@ -249,14 +281,10 @@ const categoryColors: Record<string, string> = {
     const activeFilters = document.getElementById('active-filters') as HTMLDivElement;
     const clearAllBtn = document.getElementById('clear-all-filters') as HTMLButtonElement;
     const categorySections = document.querySelectorAll('.category-section');
+    const categoryCards = document.querySelectorAll('.category-card');
 
     let currentSearchTerm = '';
     let currentCategory = '';
-
-    // Format price in COP
-    function formatPrice(price: number): string {
-      return `$${(price / 1000).toFixed(3).replace('.', ',')} COP`;
-    }
 
     // Update visible categories based on filters
     function updateCategoryVisibility() {
@@ -338,6 +366,31 @@ const categoryColors: Record<string, string> = {
         clearSearchBtn.style.opacity = '0';
         clearSearchBtn.classList.add('pointer-events-none');
       }
+      
+      // Update visual category cards
+      updateCategoryCards();
+    }
+
+    // Update visual category card states
+    function updateCategoryCards() {
+      categoryCards.forEach(card => {
+        const cardCategoryId = card.getAttribute('data-category');
+        const indicator = card.querySelector('.category-indicator') as HTMLElement;
+        
+        if (currentCategory === cardCategoryId) {
+          card.classList.add('active-category');
+          if (indicator) {
+            indicator.style.opacity = '1';
+            indicator.style.transform = 'scale(1)';
+          }
+        } else {
+          card.classList.remove('active-category');
+          if (indicator) {
+            indicator.style.opacity = '0';
+            indicator.style.transform = 'scale(0)';
+          }
+        }
+      });
     }
 
     // Search input handler
@@ -346,10 +399,34 @@ const categoryColors: Record<string, string> = {
       updateCategoryVisibility();
     });
 
-    // Category filter handler
+    // Category filter dropdown handler
     categoryFilter?.addEventListener('change', (e) => {
       currentCategory = (e.target as HTMLSelectElement).value;
       updateCategoryVisibility();
+    });
+
+    // Category card click handler
+    categoryCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const categoryId = card.getAttribute('data-category') || '';
+        
+        if (currentCategory === categoryId) {
+          // Deselect if clicking the same category
+          currentCategory = '';
+          categoryFilter.value = '';
+        } else {
+          currentCategory = categoryId;
+          categoryFilter.value = categoryId;
+        }
+        
+        updateCategoryVisibility();
+        
+        // Smooth scroll to products section
+        const productsSection = document.getElementById('products-section');
+        if (productsSection) {
+          productsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
     });
 
     // Clear search button
@@ -464,5 +541,21 @@ const categoryColors: Record<string, string> = {
       opacity: 1;
       transform: translateY(0);
     }
+  }
+  
+  /* Active category card styling */
+  .category-card.active-category {
+    background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    border-color: var(--color-primary);
+    transform: scale(1.05);
+  }
+  
+  .category-card.active-category h3,
+  .category-card.active-category .material-symbols-outlined {
+    color: white !important;
+  }
+  
+  .category-card.active-category > div > div {
+    background-color: rgba(255, 255, 255, 0.2) !important;
   }
 </style>
