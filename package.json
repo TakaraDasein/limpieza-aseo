@@ -16,14 +16,14 @@
     "db:seed": "tsx src/db/seed.ts"
   },
   "dependencies": {
-    "@astrojs/node": "10.0.4",
+    "@astrojs/vercel": "10.0.4",
     "@auth/core": "0.37.3",
     "@libsql/client": "0.17.2",
-    "@types/bcrypt": "^6.0.0",
+    "@types/bcrypt": "6.0.0",
     "astro": "6.0.8",
     "auth-astro": "4.2.0",
-    "bcrypt": "^6.0.0",
-    "cloudinary": "^2.9.0",
+    "bcrypt": "6.0.0",
+    "cloudinary": "2.9.0",
     "dotenv": "17.4.1",
     "drizzle-orm": "0.45.2"
   },
@@ -33,7 +33,7 @@
     "drizzle-kit": "0.31.10",
     "postcss": "8.5.8",
     "tailwindcss": "4.2.2",
-    "tsx": "^4.21.0"
+    "tsx": "4.21.0"
   },
   "packageManager": "pnpm@9.15.4"
 }
