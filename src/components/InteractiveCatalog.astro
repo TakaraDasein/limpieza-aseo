@@ -558,72 +558,9 @@ const categoryColors: Record<string, string> = {
 
     // PDF Download / Print button
     const downloadPdfBtn = document.getElementById('download-pdf-btn');
-    const productsSection = document.getElementById('products-section');
-    
-    downloadPdfBtn?.addEventListener('click', async () => {
-      // Prevent multiple clicks
-      if (downloadPdfBtn.classList.contains('pointer-events-none')) return;
-      
-      // Visual feedback
-      const originalHtml = downloadPdfBtn.innerHTML;
-      downloadPdfBtn.innerHTML = `
-        <span class="material-symbols-outlined text-xl animate-spin" style="animation: spin 1s linear infinite;">sync</span>
-        <span>Generando PDF...</span>
-      `;
-      downloadPdfBtn.classList.add('pointer-events-none', 'opacity-80');
-
-      try {
-        // 1. Load html2pdf library dynamically so we don't slow down the page initial load
-        if (!(window as any).html2pdf) {
-          await new Promise((resolve, reject) => {
-            const script = document.createElement('script');
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-            script.onload = resolve;
-            script.onerror = reject;
-            document.head.appendChild(script);
-          });
-        }
-
-        // 2. Reset filters to show the whole catalog
-        if (currentSearchTerm !== '' || currentCategory !== '') {
-          searchInput.value = '';
-          categoryFilter.value = '';
-          currentSearchTerm = '';
-          currentCategory = '';
-          updateCategoryVisibility();
-        }
-
-        // Wait a moment for DOM and animations to settle
-        await new Promise(resolve => setTimeout(resolve, 800));
-
-        // 3. Prepare the element for PDF export
-        if (productsSection) {
-          // Add a temporary class to hide WhatsApp buttons and quantity selectors
-          productsSection.classList.add('pdf-export-mode');
-
-          // Configure html2pdf for "Carta" (Letter) in Landscape
-          const opt = {
-            margin:       [15, 15, 15, 15], // Top, Right, Bottom, Left (mm)
-            filename:     'Catalogo_Mister_LyA.pdf',
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
-            jsPDF:        { unit: 'mm', format: 'letter', orientation: 'landscape' },
-            // This tells the library to respect CSS break-inside and break-before
-            pagebreak:    { mode: ['css', 'legacy'] }
-          };
-
-          // Generate and trigger direct download
-          await (window as any).html2pdf().set(opt).from(productsSection).save();
-        }
-      } catch (error) {
-        console.error('Error generating PDF:', error);
-        alert('Hubo un problema al generar el PDF. Por favor, inténtalo nuevamente.');
-      } finally {
-        // Restore button and UI
-        downloadPdfBtn.innerHTML = originalHtml;
-        downloadPdfBtn.classList.remove('pointer-events-none', 'opacity-80');
-        productsSection?.classList.remove('pdf-export-mode');
-      }
+    downloadPdfBtn?.addEventListener('click', () => {
+      // Abre nuestra ruta exclusiva de impresion
+      window.open('/catalogo-imprimir', '_blank');
     });
 
     // Initial display: show all categories
@@ -752,68 +689,4 @@ const categoryColors: Record<string, string> = {
     background: var(--color-primary-container);
   }
 
-  /* --- DYNAMIC HTML2PDF EXPORT STYLES --- */
-  .pdf-export-mode .print-hidden {
-    display: none !important;
-  }
-  
-  .pdf-export-mode .category-section {
-    page-break-before: always;
-    break-before: page;
-  }
-  
-  .pdf-export-mode .category-section:first-child {
-    page-break-before: auto;
-    break-before: auto;
-  }
-
-  .pdf-export-mode .product-card {
-    page-break-inside: avoid;
-    break-inside: avoid;
-  }
-  
-  /* Ensure the grid maintains horizontal aspect when converting */
-  .pdf-export-mode .grid {
-    display: grid !important;
-    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    gap: 16px !important;
-  }
-  
-  /* Responsive fallbacks if the device is small */
-  @media (max-width: 1024px) {
-    .pdf-export-mode .grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-    }
-  }
-
-  /* CRITICAL: html2canvas (used by html2pdf) crashes when trying to parse modern 'oklch()' 
-     colors inside linear-gradients. Tailwind v4 uses oklch. We must strip gradients 
-     during export and use solid safe HEX colors instead to avoid crashes. */
-  .pdf-export-mode .bg-gradient-to-br,
-  .pdf-export-mode .bg-gradient-to-t {
-    background-image: none !important;
-  }
-  
-  /* Fallback solid background for category headers */
-  .pdf-export-mode .category-section > div:first-child {
-    background-color: #f2f4f6 !important; /* surface-container-low hex */
-    border: 1px solid #e0e3e5 !important;
-    padding: 1.5rem !important;
-    border-radius: 1rem !important;
-    margin-bottom: 2rem !important;
-  }
-  
-  /* Fallback for the image dark overlay (remove it) */
-  .pdf-export-mode .from-black\/40 {
-    background-color: transparent !important;
-    opacity: 0 !important;
-  }
-
-  /* Ensure card borders are visible without soft shadows */
-  .pdf-export-mode .product-card {
-    page-break-inside: avoid;
-    break-inside: avoid;
-    border: 1px solid #e0e3e5 !important;
-    box-shadow: none !important;
-  }
 </style>
