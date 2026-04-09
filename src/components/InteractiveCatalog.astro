@@ -709,12 +709,17 @@ const categoryColors: Record<string, string> = {
     }
 
     /* Hide everything globally except the main wrapper */
-    body > *:not(main) {
+    :global(body > *:not(main)) {
+      display: none !important;
+    }
+    
+    /* Explicitly hide nav and footer just in case */
+    :global(nav), :global(footer), :global(.whatsapp-btn), :global(#whatsapp-button) {
       display: none !important;
     }
     
     /* We have a padding-top on main that ruins print pages, reset it */
-    main {
+    :global(main) {
       padding-top: 0 !important;
     }
 
