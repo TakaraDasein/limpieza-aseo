@@ -52,7 +52,7 @@ const error = Astro.url.searchParams.get('error');
         )}
 
         <!-- Login Form -->
-        <form method="post" action="/api/auth/signin/credentials" class="space-y-6">
+        <form id="login-form" class="space-y-6">
           <!-- Email Field -->
           <div>
             <label for="email" class="block text-label-large font-medium text-on-surface mb-2">
@@ -98,10 +98,11 @@ const error = Astro.url.searchParams.get('error');
           <!-- Submit Button -->
           <button
             type="submit"
-            class="w-full py-3.5 px-6 bg-primary text-on-primary rounded-full text-label-large font-semibold hover:shadow-md hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all flex items-center justify-center gap-2"
+            id="submit-btn"
+            class="w-full py-3.5 px-6 bg-primary text-on-primary rounded-full text-label-large font-semibold hover:shadow-md hover:brightness-105 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            <span>Iniciar Sesión</span>
-            <span class="material-symbols-outlined">
+            <span id="submit-text">Iniciar Sesión</span>
+            <span class="material-symbols-outlined" id="submit-icon">
               arrow_forward
             </span>
           </button>
@@ -115,6 +116,33 @@ const error = Astro.url.searchParams.get('error');
     </div>
   </div>
 </Layout>
+
+<script>
+  const { signIn } = await import("auth-astro/client");
+
+  const form = document.getElementById("login-form") as HTMLFormElement;
+  const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
+  const submitText = document.getElementById("submit-text") as HTMLSpanElement;
+  const submitIcon = document.getElementById("submit-icon") as HTMLSpanElement;
+
+  form?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    if (submitBtn) submitBtn.disabled = true;
+    if (submitText) submitText.textContent = "Verificando...";
+    if (submitIcon) submitIcon.textContent = "hourglass_empty";
+
+    const formData = new FormData(e.target as HTMLFormElement);
+    const data = Object.fromEntries(formData);
+    
+    // Call NextAuth / Auth.js sign in method
+    await signIn("credentials", { 
+      email: data.email, 
+      password: data.password, 
+      callbackUrl: "/admin" 
+    });
+  });
+</script>
 
 <style>
   /* Material Symbols icon styling */
