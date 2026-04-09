@@ -46,75 +46,59 @@ async function seed() {
     }
 
     // Step 3: Migrate categories
+    console.log('🧹 Clearing existing catalog data...');
+    await db.delete(schema.products);
+    await db.delete(schema.categories);
+    console.log('✅ Catalog data cleared\n');
+
     console.log('📁 Migrating categories...');
     let categoriesAdded = 0;
-    let categoriesSkipped = 0;
 
     for (const category of catalogCategories) {
-      const existing = await db
-        .select()
-        .from(schema.categories)
-        .where(eq(schema.categories.id, category.id))
-        .limit(1);
-
-      if (existing.length === 0) {
-        await db.insert(schema.categories).values({
-          id: category.id,
-          name: category.name,
-          description: category.description,
-          icon: category.icon,
-          order: 0, // Default order since catalog doesn't have it
-        });
-        categoriesAdded++;
-        console.log(`  ✓ Added category: ${category.name}`);
-      } else {
-        categoriesSkipped++;
-      }
+      await db.insert(schema.categories).values({
+        id: category.id,
+        name: category.name,
+        description: category.description,
+        icon: category.icon,
+        image: category.image,
+        order: 0, // Default order since catalog doesn't have it
+      });
+      categoriesAdded++;
+      console.log(`  ✓ Added category: ${category.name}`);
     }
 
-    console.log(`✅ Categories: ${categoriesAdded} added, ${categoriesSkipped} skipped\n`);
+    console.log(`✅ Categories: ${categoriesAdded} added\n`);
 
     // Step 4: Migrate products
     console.log('🛍️  Migrating products...');
     let productsAdded = 0;
-    let productsSkipped = 0;
 
     for (const product of catalogProducts) {
-      const existing = await db
-        .select()
-        .from(schema.products)
-        .where(eq(schema.products.sku, product.sku))
-        .limit(1);
-
-      if (existing.length === 0) {
-        await db.insert(schema.products).values({
-          id: product.id,
-          sku: product.sku,
-          name: product.name,
-          description: product.description,
-          categoryId: product.category,
-          price: product.price, // Price is already in COP (not cents)
-          image: product.image || null,
-          variants: product.variants ? JSON.stringify(product.variants) : null,
-          active: product.active,
-          order: product.order,
-        });
-        productsAdded++;
-        console.log(`  ✓ Added product: ${product.name} (${product.sku})`);
-      } else {
-        productsSkipped++;
-      }
+      await db.insert(schema.products).values({
+        id: product.id,
+        sku: product.sku,
+        name: product.name,
+        description: product.description,
+        categoryId: product.category,
+        price: product.price, // Price is already in COP (not cents)
+        image: product.image || null,
+        variants: product.variants ? JSON.stringify(product.variants) : null,
+        active: product.active,
+        order: product.order,
+      });
+      productsAdded++;
+      console.log(`  ✓ Added product: ${product.name} (${product.sku})`);
     }
 
-    console.log(`✅ Products: ${productsAdded} added, ${productsSkipped} skipped\n`);
+    console.log(`✅ Products: ${productsAdded} added\n`);
 
     // Summary
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
     console.log('🎉 Seed completed successfully!\n');
     console.log('Summary:');
     console.log(`  • Admin user: ${existingAdmin.length === 0 ? 'created' : 'already exists'}`);
-    console.log(`  • Categories: ${categoriesAdded} added, ${categoriesSkipped} skipped`);
-    console.log(`  • Products: ${productsAdded} added, ${productsSkipped} skipped`);
+    console.log(`  • Categories: ${categoriesAdded} added`);
+    console.log(`  • Products: ${productsAdded} added`);
     console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n');
 
     process.exit(0);

@@ -18,6 +18,7 @@ export const categories = sqliteTable('categories', {
   name: text('name').notNull(),
   description: text('description'),
   icon: text('icon'),
+  image: text('image'), // General category image
   order: integer('order').default(0),
   createdAt: integer('created_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),
   updatedAt: integer('updated_at', { mode: 'timestamp' }).default(sql`(unixepoch())`).notNull(),

@@ -16,16 +16,12 @@ const error = Astro.url.searchParams.get('error');
   <div class="min-h-screen flex items-center justify-center bg-surface px-4">
     <div class="w-full max-w-md">
       <!-- Logo and Branding -->
-      <div class="text-center mb-8">
-        <div class="inline-block bg-primary rounded-full p-4 mb-4">
-          <span class="material-symbols-outlined text-on-primary" style="font-size: 48px;">
-            cleaning_services
-          </span>
-        </div>
-        <h1 class="text-display-small font-display font-bold text-on-surface mb-2">
+      <div class="text-center mb-8 flex flex-col items-center">
+        <img src="/logo-h.png" alt="Mister LyA" class="h-28 md:h-36 w-auto mb-6 drop-shadow-sm" />
+        <h1 class="text-display-small font-display font-bold text-on-surface mb-2 sr-only">
           Mister LyA
         </h1>
-        <p class="text-body-large text-on-surface-variant">
+        <p class="text-body-large text-on-surface-variant font-medium">
           El Flujo Prístino
         </p>
       </div>
