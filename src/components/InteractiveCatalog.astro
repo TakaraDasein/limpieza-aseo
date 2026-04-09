@@ -785,4 +785,35 @@ const categoryColors: Record<string, string> = {
       grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     }
   }
+
+  /* CRITICAL: html2canvas (used by html2pdf) crashes when trying to parse modern 'oklch()' 
+     colors inside linear-gradients. Tailwind v4 uses oklch. We must strip gradients 
+     during export and use solid safe HEX colors instead to avoid crashes. */
+  .pdf-export-mode .bg-gradient-to-br,
+  .pdf-export-mode .bg-gradient-to-t {
+    background-image: none !important;
+  }
+  
+  /* Fallback solid background for category headers */
+  .pdf-export-mode .category-section > div:first-child {
+    background-color: #f2f4f6 !important; /* surface-container-low hex */
+    border: 1px solid #e0e3e5 !important;
+    padding: 1.5rem !important;
+    border-radius: 1rem !important;
+    margin-bottom: 2rem !important;
+  }
+  
+  /* Fallback for the image dark overlay (remove it) */
+  .pdf-export-mode .from-black\/40 {
+    background-color: transparent !important;
+    opacity: 0 !important;
+  }
+
+  /* Ensure card borders are visible without soft shadows */
+  .pdf-export-mode .product-card {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    border: 1px solid #e0e3e5 !important;
+    box-shadow: none !important;
+  }
 </style>
