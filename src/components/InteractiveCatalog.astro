@@ -18,7 +18,7 @@ const categoryColors: Record<string, string> = {
 ---
 
 <!-- Hero Section with Title, Filters, and Categories -->
-<section class="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary via-primary-container to-secondary">
+<section id="catalog-hero" class="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary via-primary-container to-secondary">
   <!-- Animated background shapes -->
   <div class="absolute inset-0 overflow-hidden">
     <div class="absolute top-20 left-10 w-72 h-72 bg-secondary-fixed/20 rounded-full blur-3xl animate-pulse"></div>
@@ -37,7 +37,13 @@ const categoryColors: Record<string, string> = {
     </div>
 
     <!-- Filters Container -->
-    <div class="max-w-5xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 mb-12">
+    <div class="max-w-5xl mx-auto bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl p-6 md:p-8 mb-12 relative">
+      <div class="flex justify-end mb-4 absolute -top-14 right-4 md:static md:top-auto md:right-auto md:mb-6">
+        <button id="download-pdf-btn" class="flex items-center gap-2 bg-white/20 md:bg-primary/10 hover:bg-white/30 md:hover:bg-primary/20 text-white md:text-primary backdrop-blur-md px-5 py-2.5 rounded-full transition-all text-sm font-bold shadow-lg md:shadow-none border border-white/30 md:border-transparent">
+          <span class="material-symbols-outlined text-xl">download</span>
+          <span>Descargar Catálogo (PDF)</span>
+        </button>
+      </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         
         <!-- Search Bar -->
@@ -258,7 +264,7 @@ const categoryColors: Record<string, string> = {
                   )}
                   
                   <!-- Quantity Selector -->
-                  <div class="mb-4">
+                  <div class="mb-4 print-hidden">
                     <label class="text-xs font-semibold text-on-surface-variant mb-2 block">Cantidad:</label>
                     <div class="flex items-center gap-3">
                       <button 
@@ -284,7 +290,7 @@ const categoryColors: Record<string, string> = {
                   </div>
                   
                   <button 
-                    class="whatsapp-btn w-full bg-primary text-on-primary py-3 rounded-xl font-bold hover:bg-primary-container hover:scale-95 transition-all flex items-center justify-center gap-2 group-hover:shadow-lg"
+                    class="whatsapp-btn print-hidden w-full bg-primary text-on-primary py-3 rounded-xl font-bold hover:bg-primary-container hover:scale-95 transition-all flex items-center justify-center gap-2 group-hover:shadow-lg"
                     data-product-id={product.id}
                     data-product-name={product.name}
                     data-product-sku={product.sku}
@@ -550,6 +556,24 @@ const categoryColors: Record<string, string> = {
       updateCategoryVisibility();
     });
 
+    // PDF Download / Print button
+    const downloadPdfBtn = document.getElementById('download-pdf-btn');
+    downloadPdfBtn?.addEventListener('click', () => {
+      // 1. Reset filters so the whole catalog is visible before printing
+      if (currentSearchTerm !== '' || currentCategory !== '') {
+        searchInput.value = '';
+        categoryFilter.value = '';
+        currentSearchTerm = '';
+        currentCategory = '';
+        updateCategoryVisibility();
+      }
+
+      // 2. Trigger browser's native print/PDF generator after the DOM updates
+      setTimeout(() => {
+        window.print();
+      }, 400);
+    });
+
     // Initial display: show all categories
     categorySections.forEach(section => {
       (section as HTMLElement).style.display = 'block';
@@ -674,5 +698,89 @@ const categoryColors: Record<string, string> = {
   
   .autocomplete-item:hover {
     background: var(--color-primary-container);
+  }
+
+  /* --- PRINT STYLES FOR PDF EXPORT --- */
+  @media print {
+    @page {
+      size: letter portrait;
+      margin: 1.5cm;
+    }
+
+    /* Hide everything globally except the main wrapper */
+    body > *:not(main) {
+      display: none !important;
+    }
+    
+    /* We have a padding-top on main that ruins print pages, reset it */
+    main {
+      padding-top: 0 !important;
+    }
+
+    /* Hide hero inside main */
+    #catalog-hero,
+    .print-hidden,
+    #download-pdf-btn {
+      display: none !important;
+      visibility: hidden !important;
+    }
+
+    #products-section {
+      display: block !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: white !important;
+    }
+
+    /* Format categories to avoid cutting them weirdly */
+    .category-section {
+      display: block !important; /* Force all categories to be visible for printing */
+      page-break-before: always;
+      break-before: page;
+      margin-bottom: 2cm !important;
+      background: transparent !important;
+    }
+
+    .category-section:first-child {
+      page-break-before: auto;
+      break-before: auto;
+    }
+
+    /* Fix category header colors and shadows for print */
+    .category-section > div:first-child {
+      background: #f8fafc !important; /* light gray */
+      border: 1px solid #e2e8f0;
+      padding: 1rem !important;
+      margin-bottom: 1.5rem !important;
+      box-shadow: none !important;
+      break-inside: avoid;
+    }
+
+    /* Ensure product cards don't split across pages */
+    .product-card {
+      page-break-inside: avoid;
+      break-inside: avoid;
+      border: 1px solid #e2e8f0 !important;
+      box-shadow: none !important;
+      margin-bottom: 1rem !important;
+      background: white !important;
+      display: block !important; /* Ensure visibility */
+    }
+
+    /* Force a clean 3-column grid layout in print */
+    .grid {
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 1.5rem !important;
+    }
+
+    /* Keep images constrained */
+    img {
+      max-width: 100% !important;
+      height: auto !important;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
   }
 </style>
