@@ -11,6 +11,7 @@ const SALT_ROUNDS = 10;
 // Create client and db instance
 const client = createClient({
   url: process.env.DATABASE_URL || 'file:local.db',
+  authToken: process.env.DATABASE_AUTH_TOKEN,
 });
 
 const db = drizzle(client, { schema });
