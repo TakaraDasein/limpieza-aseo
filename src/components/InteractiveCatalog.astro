@@ -559,8 +559,19 @@ const categoryColors: Record<string, string> = {
     // PDF Download / Print button
     const downloadPdfBtn = document.getElementById('download-pdf-btn');
     downloadPdfBtn?.addEventListener('click', () => {
-      // Abre nuestra ruta exclusiva de impresion
-      window.open('/catalogo-imprimir', '_blank');
+      // 1. Reset filters so the whole catalog is visible before printing
+      if (currentSearchTerm !== '' || currentCategory !== '') {
+        searchInput.value = '';
+        categoryFilter.value = '';
+        currentSearchTerm = '';
+        currentCategory = '';
+        updateCategoryVisibility();
+      }
+
+      // 2. Trigger browser's native print/PDF generator after the DOM updates
+      setTimeout(() => {
+        window.print();
+      }, 400);
     });
 
     // Initial display: show all categories
@@ -689,4 +700,89 @@ const categoryColors: Record<string, string> = {
     background: var(--color-primary-container);
   }
 
+  /* --- PRINT STYLES FOR PDF EXPORT --- */
+  @media print {
+    @page {
+      /* Formato Horizontal automático, sin restringir a Carta para que los productos quepan bien */
+      size: landscape;
+      margin: 1cm;
+    }
+
+    /* Hide everything globally except the main wrapper */
+    body > *:not(main) {
+      display: none !important;
+    }
+    
+    /* We have a padding-top on main that ruins print pages, reset it */
+    main {
+      padding-top: 0 !important;
+    }
+
+    /* Hide hero inside main */
+    #catalog-hero,
+    .print-hidden,
+    #download-pdf-btn {
+      display: none !important;
+      visibility: hidden !important;
+    }
+
+    #products-section {
+      display: block !important;
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: white !important;
+    }
+
+    /* Format categories to avoid cutting them weirdly */
+    .category-section {
+      display: block !important; /* Force all categories to be visible for printing */
+      page-break-before: always;
+      break-before: page;
+      margin-bottom: 2cm !important;
+      background: transparent !important;
+    }
+
+    .category-section:first-child {
+      page-break-before: auto;
+      break-before: auto;
+    }
+
+    /* Fix category header colors and shadows for print */
+    .category-section > div:first-child {
+      background: #f8fafc !important; /* light gray */
+      border: 1px solid #e2e8f0;
+      padding: 1rem !important;
+      margin-bottom: 1.5rem !important;
+      box-shadow: none !important;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* Ensure product cards don't split across pages */
+    .product-card {
+      page-break-inside: avoid;
+      break-inside: avoid;
+      border: 1px solid #e2e8f0 !important;
+      box-shadow: none !important;
+      margin-bottom: 1rem !important;
+      background: white !important;
+      display: block !important; /* Ensure visibility */
+    }
+
+    /* Force a clean 4-column grid layout in print (because it's landscape) */
+    .grid {
+      display: grid !important;
+      grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+      gap: 1.5rem !important;
+    }
+
+    /* Keep images constrained */
+    img {
+      max-width: 100% !important;
+      height: auto !important;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+  }
 </style>
