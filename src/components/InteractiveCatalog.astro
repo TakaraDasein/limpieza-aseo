@@ -558,20 +558,72 @@ const categoryColors: Record<string, string> = {
 
     // PDF Download / Print button
     const downloadPdfBtn = document.getElementById('download-pdf-btn');
-    downloadPdfBtn?.addEventListener('click', () => {
-      // 1. Reset filters so the whole catalog is visible before printing
-      if (currentSearchTerm !== '' || currentCategory !== '') {
-        searchInput.value = '';
-        categoryFilter.value = '';
-        currentSearchTerm = '';
-        currentCategory = '';
-        updateCategoryVisibility();
-      }
+    const productsSection = document.getElementById('products-section');
+    
+    downloadPdfBtn?.addEventListener('click', async () => {
+      // Prevent multiple clicks
+      if (downloadPdfBtn.classList.contains('pointer-events-none')) return;
+      
+      // Visual feedback
+      const originalHtml = downloadPdfBtn.innerHTML;
+      downloadPdfBtn.innerHTML = `
+        <span class="material-symbols-outlined text-xl animate-spin" style="animation: spin 1s linear infinite;">sync</span>
+        <span>Generando PDF...</span>
+      `;
+      downloadPdfBtn.classList.add('pointer-events-none', 'opacity-80');
 
-      // 2. Trigger browser's native print/PDF generator after the DOM updates
-      setTimeout(() => {
-        window.print();
-      }, 400);
+      try {
+        // 1. Load html2pdf library dynamically so we don't slow down the page initial load
+        if (!(window as any).html2pdf) {
+          await new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
+          });
+        }
+
+        // 2. Reset filters to show the whole catalog
+        if (currentSearchTerm !== '' || currentCategory !== '') {
+          searchInput.value = '';
+          categoryFilter.value = '';
+          currentSearchTerm = '';
+          currentCategory = '';
+          updateCategoryVisibility();
+        }
+
+        // Wait a moment for DOM and animations to settle
+        await new Promise(resolve => setTimeout(resolve, 800));
+
+        // 3. Prepare the element for PDF export
+        if (productsSection) {
+          // Add a temporary class to hide WhatsApp buttons and quantity selectors
+          productsSection.classList.add('pdf-export-mode');
+
+          // Configure html2pdf for "Carta" (Letter) in Landscape
+          const opt = {
+            margin:       [15, 15, 15, 15], // Top, Right, Bottom, Left (mm)
+            filename:     'Catalogo_Mister_LyA.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF:        { unit: 'mm', format: 'letter', orientation: 'landscape' },
+            // This tells the library to respect CSS break-inside and break-before
+            pagebreak:    { mode: ['css', 'legacy'] }
+          };
+
+          // Generate and trigger direct download
+          await (window as any).html2pdf().set(opt).from(productsSection).save();
+        }
+      } catch (error) {
+        console.error('Error generating PDF:', error);
+        alert('Hubo un problema al generar el PDF. Por favor, inténtalo nuevamente.');
+      } finally {
+        // Restore button and UI
+        downloadPdfBtn.innerHTML = originalHtml;
+        downloadPdfBtn.classList.remove('pointer-events-none', 'opacity-80');
+        productsSection?.classList.remove('pdf-export-mode');
+      }
     });
 
     // Initial display: show all categories
@@ -700,87 +752,37 @@ const categoryColors: Record<string, string> = {
     background: var(--color-primary-container);
   }
 
-  /* --- PRINT STYLES FOR PDF EXPORT --- */
-  @media print {
-    @page {
-      size: letter portrait;
-      margin: 1.5cm;
-    }
+  /* --- DYNAMIC HTML2PDF EXPORT STYLES --- */
+  .pdf-export-mode .print-hidden {
+    display: none !important;
+  }
+  
+  .pdf-export-mode .category-section {
+    page-break-before: always;
+    break-before: page;
+  }
+  
+  .pdf-export-mode .category-section:first-child {
+    page-break-before: auto;
+    break-before: auto;
+  }
 
-    /* Hide everything globally except the main wrapper */
-    body > *:not(main) {
-      display: none !important;
-    }
-    
-    /* We have a padding-top on main that ruins print pages, reset it */
-    main {
-      padding-top: 0 !important;
-    }
-
-    /* Hide hero inside main */
-    #catalog-hero,
-    .print-hidden,
-    #download-pdf-btn {
-      display: none !important;
-      visibility: hidden !important;
-    }
-
-    #products-section {
-      display: block !important;
-      width: 100% !important;
-      margin: 0 !important;
-      padding: 0 !important;
-      background: white !important;
-    }
-
-    /* Format categories to avoid cutting them weirdly */
-    .category-section {
-      display: block !important; /* Force all categories to be visible for printing */
-      page-break-before: always;
-      break-before: page;
-      margin-bottom: 2cm !important;
-      background: transparent !important;
-    }
-
-    .category-section:first-child {
-      page-break-before: auto;
-      break-before: auto;
-    }
-
-    /* Fix category header colors and shadows for print */
-    .category-section > div:first-child {
-      background: #f8fafc !important; /* light gray */
-      border: 1px solid #e2e8f0;
-      padding: 1rem !important;
-      margin-bottom: 1.5rem !important;
-      box-shadow: none !important;
-      break-inside: avoid;
-    }
-
-    /* Ensure product cards don't split across pages */
-    .product-card {
-      page-break-inside: avoid;
-      break-inside: avoid;
-      border: 1px solid #e2e8f0 !important;
-      box-shadow: none !important;
-      margin-bottom: 1rem !important;
-      background: white !important;
-      display: block !important; /* Ensure visibility */
-    }
-
-    /* Force a clean 3-column grid layout in print */
-    .grid {
-      display: grid !important;
-      grid-template-columns: repeat(3, 1fr) !important;
-      gap: 1.5rem !important;
-    }
-
-    /* Keep images constrained */
-    img {
-      max-width: 100% !important;
-      height: auto !important;
-      page-break-inside: avoid;
-      break-inside: avoid;
+  .pdf-export-mode .product-card {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+  
+  /* Ensure the grid maintains horizontal aspect when converting */
+  .pdf-export-mode .grid {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 16px !important;
+  }
+  
+  /* Responsive fallbacks if the device is small */
+  @media (max-width: 1024px) {
+    .pdf-export-mode .grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
     }
   }
 </style>
