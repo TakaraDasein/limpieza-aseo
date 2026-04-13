@@ -29,7 +29,7 @@ const parseJsonMaybe = (value: unknown, fallback: any) => {
 const normalizedProducts = products.map((p) => ({
   ...p,
   variants: parseJsonMaybe(p.variants, null),
-  images: parseJsonMaybe(p.images, []),
+  images: [],
 }));
 
 const activeProducts = normalizedProducts.filter((p) => p?.active);
@@ -46,9 +46,6 @@ const getCategoryProducts = (categoryId: string) => {
 const getProductImage = (product: any) => {
   if (!product) return 'https://via.placeholder.com/800x1000?text=Sin+Imagen';
   if (product.image) return product.image;
-  if (Array.isArray(product.images) && product.images.length > 0 && product.images[0]) {
-    return product.images[0];
-  }
   return 'https://via.placeholder.com/800x1000?text=Sin+Imagen';
 };
 

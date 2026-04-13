@@ -39,7 +39,6 @@ try {
 			categoryId: productsTable.categoryId,
 			price: productsTable.price,
 			image: productsTable.image,
-			images: productsTable.images,
 			variants: productsTable.variants,
 			active: productsTable.active,
 			order: productsTable.order,
@@ -61,7 +60,6 @@ try {
 		.map((p: any) => ({
 			...p,
 			variants: parseJsonField(p.variants, null),
-			images: parseJsonField(p.images, []),
 		}));
 
 	categories = allCategories;
