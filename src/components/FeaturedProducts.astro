@@ -1,4 +1,6 @@
 ---
+import { products as localCatalogProducts } from '../data/catalog';
+
 interface Props {
   products: any[];
   categories: any[];
@@ -45,6 +47,28 @@ const getCategoryProducts = (categoryId: string) => {
 
 const getProductImage = (product: any) => {
   if (!product) return 'https://via.placeholder.com/800x1000?text=Sin+Imagen';
+
+  const localBySku = localCatalogProducts.find((p) => p.sku === product.sku);
+  if (localBySku?.image) return localBySku.image;
+
+  const normalize = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+
+  const productName = typeof product.name === 'string' ? normalize(product.name) : '';
+  if (productName) {
+    const localByName = localCatalogProducts.find((p) => normalize(p.name) === productName);
+    if (localByName?.image) return localByName.image;
+  }
+
+  if (typeof product.image === 'string' && product.image.startsWith('/imagenes-productos/')) {
+    return product.image;
+  }
+
   if (product.image) return product.image;
   return 'https://via.placeholder.com/800x1000?text=Sin+Imagen';
 };

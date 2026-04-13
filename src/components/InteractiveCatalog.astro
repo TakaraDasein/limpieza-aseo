@@ -218,7 +218,7 @@ const categoryColors: Record<string, string> = {
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {categoryProducts.map((product, prodIndex) => (
               <div 
-                class="product-card bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 group"
+                class="product-card h-full bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 group flex flex-col"
                 style={`animation-delay: ${prodIndex * 50}ms;`}
                 data-product-name={product.name.toLowerCase()}
                 data-product-description={product.description.toLowerCase()}
@@ -234,15 +234,15 @@ const categoryColors: Record<string, string> = {
                   <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                 </div>
                 
-                <div class="p-6">
-                  <h4 class="font-headline font-bold text-lg text-primary mb-2 line-clamp-2 group-hover:text-secondary transition-colors">
+                <div class="p-6 flex flex-col flex-1">
+                  <h4 class="font-headline font-bold text-lg text-primary mb-2 line-clamp-2 group-hover:text-secondary transition-colors min-h-[3.5rem]">
                     {product.name}
                   </h4>
-                  <p class="text-sm text-on-surface-variant mb-4 line-clamp-3">
+                  <p class="text-sm text-on-surface-variant mb-4 line-clamp-3 min-h-[4.5rem]">
                     {product.description}
                   </p>
                   
-                  {product.variants && product.variants.length > 0 && (
+                  {product.variants && product.variants.length > 0 ? (
                     <div class="mb-4">
                       <p class="text-xs font-semibold text-secondary mb-2">Variantes disponibles:</p>
                       <div class="flex flex-wrap gap-2">
@@ -253,52 +253,56 @@ const categoryColors: Record<string, string> = {
                         ))}
                       </div>
                     </div>
+                  ) : (
+                    <div class="mb-4 min-h-[3.25rem]"></div>
                   )}
-                  
-                  {product.price && (
-                    <div class="mb-3">
-                      <p class="text-lg font-bold text-primary">
-                        ${(product.price / 1000).toFixed(3).replace('.', ',')} COP
-                      </p>
+
+                  <div class="mt-auto">
+                    {product.price && (
+                      <div class="mb-3">
+                        <p class="text-lg font-bold text-primary">
+                          ${(product.price / 1000).toFixed(3).replace('.', ',')} COP
+                        </p>
+                      </div>
+                    )}
+                    
+                    <!-- Quantity Selector -->
+                    <div class="mb-4 print-hidden">
+                      <label class="text-xs font-semibold text-on-surface-variant mb-2 block">Cantidad:</label>
+                      <div class="flex items-center gap-3">
+                        <button 
+                          class="quantity-btn-minus w-10 h-10 bg-surface-container rounded-lg font-bold text-primary hover:bg-surface-container-high transition-all flex items-center justify-center"
+                          data-product-id={product.id}
+                        >
+                          <span class="material-symbols-outlined text-xl">remove</span>
+                        </button>
+                        <input 
+                          type="number" 
+                          min="1" 
+                          value="1" 
+                          class="quantity-input w-16 h-10 text-center border-2 border-surface-container rounded-lg font-bold text-primary focus:border-primary focus:outline-none"
+                          data-product-id={product.id}
+                        />
+                        <button 
+                          class="quantity-btn-plus w-10 h-10 bg-surface-container rounded-lg font-bold text-primary hover:bg-surface-container-high transition-all flex items-center justify-center"
+                          data-product-id={product.id}
+                        >
+                          <span class="material-symbols-outlined text-xl">add</span>
+                        </button>
+                      </div>
                     </div>
-                  )}
-                  
-                  <!-- Quantity Selector -->
-                  <div class="mb-4 print-hidden">
-                    <label class="text-xs font-semibold text-on-surface-variant mb-2 block">Cantidad:</label>
-                    <div class="flex items-center gap-3">
-                      <button 
-                        class="quantity-btn-minus w-10 h-10 bg-surface-container rounded-lg font-bold text-primary hover:bg-surface-container-high transition-all flex items-center justify-center"
-                        data-product-id={product.id}
-                      >
-                        <span class="material-symbols-outlined text-xl">remove</span>
-                      </button>
-                      <input 
-                        type="number" 
-                        min="1" 
-                        value="1" 
-                        class="quantity-input w-16 h-10 text-center border-2 border-surface-container rounded-lg font-bold text-primary focus:border-primary focus:outline-none"
-                        data-product-id={product.id}
-                      />
-                      <button 
-                        class="quantity-btn-plus w-10 h-10 bg-surface-container rounded-lg font-bold text-primary hover:bg-surface-container-high transition-all flex items-center justify-center"
-                        data-product-id={product.id}
-                      >
-                        <span class="material-symbols-outlined text-xl">add</span>
-                      </button>
-                    </div>
+
+                    <button 
+                      class="whatsapp-btn print-hidden w-full bg-primary text-on-primary py-3 rounded-xl font-bold hover:bg-primary-container hover:scale-95 transition-all flex items-center justify-center gap-2 group-hover:shadow-lg"
+                      data-product-id={product.id}
+                      data-product-name={product.name}
+                      data-product-sku={product.sku}
+                      data-product-price={product.price}
+                    >
+                      <span>Consultar por WhatsApp</span>
+                      <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
                   </div>
-                  
-                  <button 
-                    class="whatsapp-btn print-hidden w-full bg-primary text-on-primary py-3 rounded-xl font-bold hover:bg-primary-container hover:scale-95 transition-all flex items-center justify-center gap-2 group-hover:shadow-lg"
-                    data-product-id={product.id}
-                    data-product-name={product.name}
-                    data-product-sku={product.sku}
-                    data-product-price={product.price}
-                  >
-                    <span>Consultar por WhatsApp</span>
-                    <span class="material-symbols-outlined text-sm">arrow_forward</span>
-                  </button>
                 </div>
               </div>
             ))}
