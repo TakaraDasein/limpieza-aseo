@@ -224,25 +224,137 @@ const categoryColors: Record<string, string> = {
                 data-product-description={product.description.toLowerCase()}
                 data-product-price={product.price}
               >
-                <div class="aspect-square overflow-hidden bg-surface-container-highest relative">
-                  <img 
-                    src={product.image} 
-                    alt={product.name}
-                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                    loading="lazy"
-                  />
-                  <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="aspect-square overflow-hidden bg-surface-container-highest relative group/carousel">
+                  {(() => {
+                    const allImages = [product.image, ...(product.images || [])].filter(Boolean);
+                    if (allImages.length === 0) allImages.push('https://via.placeholder.com/800x1000?text=Sin+Imagen');
+                    
+                    return (
+                      <div class="w-full h-full relative">
+                        {allImages.map((img: string, i: number) => (
+                          <img 
+                            src={img} 
+                            alt={`${product.name} - Imagen ${i + 1}`}
+                            class={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 carousel-img-${product.id} ${i === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0'} group-hover:scale-110 transition-transform`}
+                            loading="lazy"
+                          />
+                        ))}
+                        
+                        {allImages.length > 1 && (
+                          <div class="absolute bottom-2 left-0 right-0 z-20 flex justify-center gap-1 opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300">
+                            {allImages.map((_: any, i: number) => (
+                              <button 
+                                class={`w-2 h-2 rounded-full bg-white/80 hover:bg-white carousel-dot-${product.id} ${i === 0 ? 'bg-white scale-125' : ''}`}
+                                onclick={`
+                                  event.preventDefault();
+                                  event.stopPropagation();
+                                  document.querySelectorAll('.carousel-img-${product.id}').forEach((el, idx) => {
+                                    if (idx === ${i}) {
+                                      el.classList.replace('opacity-0', 'opacity-100');
+                                      el.classList.replace('z-0', 'z-10');
+                                    } else {
+                                      el.classList.replace('opacity-100', 'opacity-0');
+                                      el.classList.replace('z-10', 'z-0');
+                                    }
+                                  });
+                                  document.querySelectorAll('.carousel-dot-${product.id}').forEach((el, idx) => {
+                                    if (idx === ${i}) {
+                                      el.classList.add('bg-white', 'scale-125');
+                                      el.classList.remove('bg-white/80');
+                                    } else {
+                                      el.classList.remove('bg-white', 'scale-125');
+                                      el.classList.add('bg-white/80');
+                                    }
+                                  });
+                                `}
+                              ></button>
+                            ))}
+                          </div>
+                        )}
+                        
+                        {allImages.length > 1 && (
+                          <div class="absolute inset-y-0 left-0 right-0 z-20 flex items-center justify-between px-2 opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300 pointer-events-none">
+                            <button 
+                              class="pointer-events-auto w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center backdrop-blur-sm transition-all"
+                              onclick={`
+                                event.preventDefault();
+                                event.stopPropagation();
+                                const imgs = document.querySelectorAll('.carousel-img-${product.id}');
+                                const dots = document.querySelectorAll('.carousel-dot-${product.id}');
+                                let currentIdx = Array.from(imgs).findIndex(img => img.classList.contains('opacity-100'));
+                                let nextIdx = (currentIdx - 1 + ${allImages.length}) % ${allImages.length};
+                                
+                                imgs.forEach((el, idx) => {
+                                  if (idx === nextIdx) {
+                                    el.classList.replace('opacity-0', 'opacity-100');
+                                    el.classList.replace('z-0', 'z-10');
+                                  } else {
+                                    el.classList.replace('opacity-100', 'opacity-0');
+                                    el.classList.replace('z-10', 'z-0');
+                                  }
+                                });
+                                dots.forEach((el, idx) => {
+                                  if (idx === nextIdx) {
+                                    el.classList.add('bg-white', 'scale-125');
+                                    el.classList.remove('bg-white/80');
+                                  } else {
+                                    el.classList.remove('bg-white', 'scale-125');
+                                    el.classList.add('bg-white/80');
+                                  }
+                                });
+                              `}
+                            >
+                              <span class="material-symbols-outlined text-sm">chevron_left</span>
+                            </button>
+                            <button 
+                              class="pointer-events-auto w-8 h-8 rounded-full bg-black/30 hover:bg-black/50 text-white flex items-center justify-center backdrop-blur-sm transition-all"
+                              onclick={`
+                                event.preventDefault();
+                                event.stopPropagation();
+                                const imgs = document.querySelectorAll('.carousel-img-${product.id}');
+                                const dots = document.querySelectorAll('.carousel-dot-${product.id}');
+                                let currentIdx = Array.from(imgs).findIndex(img => img.classList.contains('opacity-100'));
+                                let nextIdx = (currentIdx + 1) % ${allImages.length};
+                                
+                                imgs.forEach((el, idx) => {
+                                  if (idx === nextIdx) {
+                                    el.classList.replace('opacity-0', 'opacity-100');
+                                    el.classList.replace('z-0', 'z-10');
+                                  } else {
+                                    el.classList.replace('opacity-100', 'opacity-0');
+                                    el.classList.replace('z-10', 'z-0');
+                                  }
+                                });
+                                dots.forEach((el, idx) => {
+                                  if (idx === nextIdx) {
+                                    el.classList.add('bg-white', 'scale-125');
+                                    el.classList.remove('bg-white/80');
+                                  } else {
+                                    el.classList.remove('bg-white', 'scale-125');
+                                    el.classList.add('bg-white/80');
+                                  }
+                                });
+                              `}
+                            >
+                              <span class="material-symbols-outlined text-sm">chevron_right</span>
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                 </div>
                 
-                <div class="p-6">
-                  <h4 class="font-headline font-bold text-lg text-primary mb-2 line-clamp-2 group-hover:text-secondary transition-colors">
+                <div class="p-6 flex flex-col h-full flex-grow">
+                  <h4 class="font-headline font-bold text-lg text-primary mb-2 line-clamp-2 group-hover:text-secondary transition-colors" style="min-height: 3.5rem;">
                     {product.name}
                   </h4>
-                  <p class="text-sm text-on-surface-variant mb-4 line-clamp-3">
+                  <p class="text-sm text-on-surface-variant mb-4 line-clamp-3 flex-grow">
                     {product.description}
                   </p>
                   
-                  {product.variants && product.variants.length > 0 && (
+                  {product.variants && product.variants.length > 0 ? (
                     <div class="mb-4">
                       <p class="text-xs font-semibold text-secondary mb-2">Variantes disponibles:</p>
                       <div class="flex flex-wrap gap-2">
@@ -253,17 +365,20 @@ const categoryColors: Record<string, string> = {
                         ))}
                       </div>
                     </div>
+                  ) : (
+                    <div class="mb-4" style="min-height: 2.5rem;"></div>
                   )}
                   
-                  {product.price && (
-                    <div class="mb-3">
-                      <p class="text-lg font-bold text-primary">
-                        ${(product.price / 1000).toFixed(3).replace('.', ',')} COP
-                      </p>
-                    </div>
-                  )}
-                  
-                  <!-- Quantity Selector -->
+                  <div class="mt-auto">
+                    {product.price && (
+                      <div class="mb-3">
+                        <p class="text-lg font-bold text-primary">
+                          ${(product.price / 1000).toFixed(3).replace('.', ',')} COP
+                        </p>
+                      </div>
+                    )}
+                    
+                    <!-- Quantity Selector -->
                   <div class="mb-4 print-hidden">
                     <label class="text-xs font-semibold text-on-surface-variant mb-2 block">Cantidad:</label>
                     <div class="flex items-center gap-3">

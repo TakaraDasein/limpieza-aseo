@@ -27,6 +27,7 @@ try {
 			categoryId: productsTable.categoryId,
 			price: productsTable.price,
 			image: productsTable.image,
+			images: productsTable.images,
 			variants: productsTable.variants,
 			active: productsTable.active,
 			order: productsTable.order,
@@ -48,6 +49,7 @@ try {
 		.map((p: any) => ({
 			...p,
 			variants: p.variants ? JSON.parse(p.variants) : null,
+			images: p.images ? JSON.parse(p.images) : [],
 		}));
 
 	categories = allCategories;
