@@ -6,23 +6,16 @@ interface Props {
 
 const { products, categories } = Astro.props;
 
-// Define background colors for each category
-const categoryColors: Record<string, string> = {
-  escobas: 'from-blue-50 via-blue-100 to-blue-50',
-  cepillos: 'from-purple-50 via-purple-100 to-purple-50',
-  traperos: 'from-green-50 via-green-100 to-green-50',
-  jabones: 'from-cyan-50 via-cyan-100 to-cyan-50',
-  esponjas: 'from-yellow-50 via-yellow-100 to-yellow-50',
-  varios: 'from-pink-50 via-pink-100 to-pink-50'
-};
 ---
 
 <!-- Hero Section with Title, Filters, and Categories -->
-<section id="catalog-hero" class="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary via-primary-container to-secondary">
+<section id="catalog-hero" class="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-primary">
   <!-- Animated background shapes -->
   <div class="absolute inset-0 overflow-hidden">
-    <div class="absolute top-20 left-10 w-72 h-72 bg-secondary-fixed/20 rounded-full blur-3xl animate-pulse"></div>
-    <div class="absolute bottom-20 right-10 w-96 h-96 bg-primary-fixed/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.12),transparent_45%),radial-gradient(circle_at_82%_78%,rgba(123,191,98,0.16),transparent_42%)]"></div>
+    <div class="absolute inset-0 opacity-30" style="background-image: radial-gradient(rgba(255,255,255,0.12) 1px, transparent 1px); background-size: 20px 20px;"></div>
+    <div class="absolute top-20 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
   </div>
   
   <div class="max-w-screen-2xl mx-auto px-6 md:px-12 py-16 md:py-20 relative z-10 w-full">
@@ -173,16 +166,17 @@ const categoryColors: Record<string, string> = {
 </section>
 <!-- Products Section -->
 <section 
-  class="py-16 transition-all duration-700 bg-gradient-to-br from-surface via-surface-container-low to-surface" 
+  class="py-16 transition-all duration-700 bg-primary" 
   id="products-section"
   data-active-category=""
 >
+  <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(rgba(255,255,255,0.16) 1px, transparent 1px); background-size: 22px 22px;"></div>
   <div class="max-w-screen-2xl mx-auto px-6 md:px-12">
     
     <!-- Products by Category -->
     {categories.map((category, index) => {
       const categoryProducts = products.filter(p => p.categoryId === category.id);
-      const bgColor = 'from-primary-fixed/20 via-primary-container/30 to-secondary-fixed/20';
+      const bgColor = index % 2 === 0 ? 'bg-primary' : 'bg-secondary';
       
       return (
         <div 
@@ -191,10 +185,11 @@ const categoryColors: Record<string, string> = {
           data-category={category.id}
         >
           <!-- Category Header with animated background -->
-          <div class={`relative rounded-3xl p-8 md:p-12 mb-10 overflow-hidden bg-gradient-to-br ${bgColor}`}>
+          <div class={`relative rounded-3xl p-8 md:p-12 mb-10 overflow-hidden ${bgColor}`}>
+            <div class="absolute inset-0 opacity-20" style="background-image: linear-gradient(120deg, rgba(255,255,255,0.08), rgba(255,255,255,0) 45%), radial-gradient(rgba(255,255,255,0.14) 1px, transparent 1px); background-size: auto, 18px 18px;"></div>
             <div class="absolute inset-0 opacity-10">
-              <div class="absolute top-0 right-0 w-64 h-64 bg-primary rounded-full blur-3xl"></div>
-              <div class="absolute bottom-0 left-0 w-96 h-96 bg-secondary rounded-full blur-3xl"></div>
+              <div class="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
+              <div class="absolute bottom-0 left-0 w-96 h-96 bg-white/60 rounded-full blur-3xl"></div>
             </div>
             
             <div class="relative z-10 flex items-center gap-6">
@@ -206,10 +201,10 @@ const categoryColors: Record<string, string> = {
                 )}
               </div>
               <div>
-                  <h2 class="font-headline text-3xl md:text-5xl font-bold tracking-tight mb-2 category-title-gradient">
+                  <h2 class="font-headline text-3xl md:text-5xl font-bold tracking-tight mb-2 text-white drop-shadow-sm">
                     {category.name}
                   </h2>
-                <p class="text-on-surface-variant text-lg">{category.description}</p>
+                <p class="text-white/85 text-lg">{category.description}</p>
               </div>
             </div>
           </div>
@@ -235,10 +230,10 @@ const categoryColors: Record<string, string> = {
                 </div>
                 
                 <div class="p-4 md:p-5 flex flex-col flex-1">
-                  <h4 class="font-headline font-bold text-base md:text-lg text-primary mb-1.5 line-clamp-2 group-hover:text-secondary transition-colors min-h-[3rem]">
+                  <h4 class="font-headline font-bold text-base md:text-lg text-primary mb-1.5 line-clamp-2 group-hover:text-secondary transition-colors">
                     {product.name}
                   </h4>
-                  <p class="text-sm text-on-surface-variant mb-3 line-clamp-2 min-h-[3rem]">
+                  <p class="text-sm text-on-surface-variant mb-3 line-clamp-2">
                     {product.description}
                   </p>
                   
@@ -253,19 +248,9 @@ const categoryColors: Record<string, string> = {
                         ))}
                       </div>
                     </div>
-                  ) : (
-                    <div class="mb-3 min-h-[2.5rem]"></div>
-                  )}
+                  ) : null}
 
                   <div class="mt-auto">
-                    {product.price && (
-                      <div class="mb-2.5">
-                        <p class="text-base md:text-lg font-bold text-primary">
-                          ${(product.price / 1000).toFixed(3).replace('.', ',')} COP
-                        </p>
-                      </div>
-                    )}
-                    
                     <div class="print-hidden grid grid-cols-2 gap-2">
                       <button 
                         class="add-to-cart-btn w-full h-10 bg-surface-container-high text-primary rounded-lg text-xs md:text-sm font-semibold hover:bg-surface-container-highest transition-all flex items-center justify-center gap-1.5"
@@ -285,7 +270,7 @@ const categoryColors: Record<string, string> = {
                         data-product-sku={product.sku}
                         data-product-price={product.price}
                       >
-                        <span>Compra directa</span>
+                        <span>{product.price ? `$${(product.price / 1000).toFixed(3).replace('.', ',')} COP` : 'Consultar'}</span>
                         <span class="material-symbols-outlined text-sm">arrow_forward</span>
                       </button>
                     </div>
@@ -796,14 +781,6 @@ const categoryColors: Record<string, string> = {
     overflow: hidden;
   }
 
-  .category-title-gradient {
-    background: linear-gradient(120deg, var(--color-primary) 0%, var(--color-primary-container) 45%, var(--color-secondary) 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.18);
-  }
-  
   /* Smooth category transitions */
   .category-section {
     animation: fadeIn 0.5s ease-out;
