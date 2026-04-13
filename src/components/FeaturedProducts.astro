@@ -144,7 +144,7 @@ const isEmpty = sections.length === 0;
   {!isEmpty &&
     sections.map((section, index) => (
       <div
-        class={`group reveal-on-scroll relative flex flex-col ${section.reverse ? 'sm:flex-row-reverse' : 'sm:flex-row'} items-stretch min-h-[520px] md:min-h-[620px] ${index % 2 === 0 ? 'bg-white' : 'bg-surface-container-low'} overflow-hidden border-b border-surface-container-high`}
+        class="group reveal-on-scroll relative flex flex-col sm:flex-row items-stretch min-h-[520px] md:min-h-[620px] bg-white overflow-hidden border-b border-surface-container-high"
         data-section={section.id}
         style={`transition-delay: ${index * 120}ms;`}
       >
@@ -215,16 +215,16 @@ const isEmpty = sections.length === 0;
 
                     <div class="w-full sm:w-auto flex items-center gap-2 sm:justify-end">
                       {section.cat2 && section.cat2Products.length > 0 && (
-                        <div class="inline-flex items-center gap-1 p-1 rounded-md border border-surface-container-high bg-surface-container">
+                        <div class="inline-flex h-10 items-center gap-1 p-1 rounded-lg border border-surface-container-high bg-surface-container">
                           <button
-                            class={`cat-toggle-btn px-2.5 py-1.5 rounded-md text-[11px] md:text-xs font-semibold transition-all duration-200 cat1-btn-${section.id} bg-primary text-on-primary shadow-sm`}
+                            class={`cat-toggle-btn h-8 px-2.5 rounded-md text-[11px] md:text-xs font-semibold transition-all duration-200 cat1-btn-${section.id} bg-primary text-on-primary shadow-sm`}
                             data-target={`cat1-${section.id}`}
                             data-section={section.id}
                           >
                             {section.cat1.name}
                           </button>
                           <button
-                            class={`cat-toggle-btn px-2.5 py-1.5 rounded-md text-[11px] md:text-xs font-semibold transition-all duration-200 cat2-btn-${section.id} bg-transparent text-on-surface-variant`}
+                            class={`cat-toggle-btn h-8 px-2.5 rounded-md text-[11px] md:text-xs font-semibold transition-all duration-200 cat2-btn-${section.id} bg-transparent text-on-surface-variant`}
                             data-target={`cat2-${section.id}`}
                             data-section={section.id}
                           >
@@ -234,7 +234,7 @@ const isEmpty = sections.length === 0;
                       )}
 
                       <a
-                        class="bg-primary text-on-primary px-4 py-2.5 rounded-lg font-semibold text-xs md:text-sm hover:scale-95 transition-all flex items-center gap-1.5 w-full sm:w-auto justify-center"
+                        class="h-10 bg-primary text-on-primary px-4 rounded-lg font-semibold text-xs md:text-sm hover:scale-95 transition-all flex items-center gap-1.5 w-full sm:w-auto justify-center"
                         href={`/catalogo?categoria=${section.cat1.id}`}
                       >
                         Ver en catalogo <span class="material-symbols-outlined text-lg">arrow_forward</span>
@@ -288,16 +288,16 @@ const isEmpty = sections.length === 0;
 
                     <div class="w-full sm:w-auto flex items-center gap-2 sm:justify-end">
                       {section.cat2 && section.cat2Products.length > 0 && (
-                        <div class="inline-flex items-center gap-1 p-1 rounded-md border border-surface-container-high bg-surface-container">
+                        <div class="inline-flex h-10 items-center gap-1 p-1 rounded-lg border border-surface-container-high bg-surface-container">
                           <button
-                            class={`cat-toggle-btn px-2.5 py-1.5 rounded-md text-[11px] md:text-xs font-semibold transition-all duration-200 cat1-btn-${section.id} bg-transparent text-on-surface-variant`}
+                            class={`cat-toggle-btn h-8 px-2.5 rounded-md text-[11px] md:text-xs font-semibold transition-all duration-200 cat1-btn-${section.id} bg-transparent text-on-surface-variant`}
                             data-target={`cat1-${section.id}`}
                             data-section={section.id}
                           >
                             {section.cat1.name}
                           </button>
                           <button
-                            class={`cat-toggle-btn px-2.5 py-1.5 rounded-md text-[11px] md:text-xs font-semibold transition-all duration-200 cat2-btn-${section.id} bg-primary text-on-primary shadow-sm`}
+                            class={`cat-toggle-btn h-8 px-2.5 rounded-md text-[11px] md:text-xs font-semibold transition-all duration-200 cat2-btn-${section.id} bg-primary text-on-primary shadow-sm`}
                             data-target={`cat2-${section.id}`}
                             data-section={section.id}
                           >
@@ -307,7 +307,7 @@ const isEmpty = sections.length === 0;
                       )}
 
                       <a
-                        class="bg-primary text-on-primary px-4 py-2.5 rounded-lg font-semibold text-xs md:text-sm hover:scale-95 transition-all flex items-center gap-1.5 w-full sm:w-auto justify-center"
+                        class="h-10 bg-primary text-on-primary px-4 rounded-lg font-semibold text-xs md:text-sm hover:scale-95 transition-all flex items-center gap-1.5 w-full sm:w-auto justify-center"
                         href={`/catalogo?categoria=${section.cat2.id}`}
                       >
                         Ver en catalogo <span class="material-symbols-outlined text-lg">arrow_forward</span>
