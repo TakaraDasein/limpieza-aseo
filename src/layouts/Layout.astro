@@ -10,6 +10,21 @@ const {
 	title = 'Mister LyA | El Flujo Prístino', 
 	description = 'Elevamos el estándar de higiene con fórmulas editoriales diseñadas para el cuidado profesional de tus espacios más preciados.'
 } = Astro.props;
+
+const bubbles = [
+	{ x: '6%', size: '14px', dur: '20s', delay: '0s', drift: '14px' },
+	{ x: '14%', size: '10px', dur: '16s', delay: '3s', drift: '-10px' },
+	{ x: '22%', size: '18px', dur: '24s', delay: '8s', drift: '18px' },
+	{ x: '31%', size: '12px', dur: '18s', delay: '2s', drift: '-14px' },
+	{ x: '39%', size: '20px', dur: '26s', delay: '6s', drift: '16px' },
+	{ x: '48%', size: '11px', dur: '17s', delay: '11s', drift: '-12px' },
+	{ x: '57%', size: '16px', dur: '22s', delay: '4s', drift: '12px' },
+	{ x: '66%', size: '13px', dur: '19s', delay: '9s', drift: '-16px' },
+	{ x: '74%', size: '22px', dur: '28s', delay: '1s', drift: '20px' },
+	{ x: '82%', size: '12px', dur: '21s', delay: '7s', drift: '-10px' },
+	{ x: '90%', size: '15px', dur: '23s', delay: '5s', drift: '14px' },
+	{ x: '95%', size: '9px', dur: '15s', delay: '10s', drift: '-8px' },
+];
 ---
 
 <!DOCTYPE html>
@@ -32,7 +47,73 @@ const {
 		
 		<title>{title}</title>
 	</head>
-	<body class="text-on-surface overflow-x-hidden">
+	<body class="text-on-surface overflow-x-hidden relative">
+		<div class="soap-bubbles" aria-hidden="true">
+			{bubbles.map((bubble) => (
+				<span
+					class="soap-bubble"
+					style={`--x:${bubble.x}; --size:${bubble.size}; --dur:${bubble.dur}; --delay:${bubble.delay}; --drift:${bubble.drift};`}
+				></span>
+			))}
+		</div>
 		<slot />
 	</body>
+	<style>
+		.soap-bubbles {
+			position: fixed;
+			inset: 0;
+			pointer-events: none;
+			overflow: hidden;
+			z-index: 1;
+		}
+
+		.soap-bubble {
+			position: absolute;
+			left: var(--x);
+			bottom: -48px;
+			width: var(--size);
+			height: var(--size);
+			border-radius: 999px;
+			background:
+				radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.05) 45%),
+				radial-gradient(circle at 68% 74%, rgba(138, 185, 255, 0.22), rgba(160, 214, 255, 0) 52%);
+			border: 1px solid rgba(255, 255, 255, 0.38);
+			box-shadow:
+				inset 0 0 10px rgba(255, 255, 255, 0.35),
+				0 0 8px rgba(124, 167, 255, 0.2);
+			opacity: 0;
+			animation: floatBubble var(--dur) linear var(--delay) infinite;
+			will-change: transform, opacity;
+		}
+
+		@keyframes floatBubble {
+			0% {
+				transform: translate3d(0, 0, 0) scale(0.94);
+				opacity: 0;
+			}
+			8% {
+				opacity: 0.28;
+			}
+			50% {
+				transform: translate3d(var(--drift), -52vh, 0) scale(1);
+				opacity: 0.22;
+			}
+			100% {
+				transform: translate3d(calc(var(--drift) * -1), -108vh, 0) scale(1.08);
+				opacity: 0;
+			}
+		}
+
+		@media (max-width: 768px) {
+			.soap-bubbles .soap-bubble:nth-child(n + 9) {
+				display: none;
+			}
+		}
+
+		@media (prefers-reduced-motion: reduce) {
+			.soap-bubbles {
+				display: none;
+			}
+		}
+	</style>
 </html>
