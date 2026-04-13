@@ -13,6 +13,18 @@ let categories: any[] = [];
 let fetchError = false;
 
 try {
+	const parseJsonField = (value: unknown, fallback: any) => {
+		if (value == null) return fallback;
+		if (typeof value === 'string') {
+			try {
+				return JSON.parse(value);
+			} catch {
+				return fallback;
+			}
+		}
+		return value;
+	};
+
 	// Set a timeout for database queries
 	const timeoutPromise = new Promise((_, reject) => 
 		setTimeout(() => reject(new Error('Database query timeout')), 5000)
@@ -48,8 +60,8 @@ try {
 		.filter((p: any) => p.active === true)
 		.map((p: any) => ({
 			...p,
-			variants: p.variants ? JSON.parse(p.variants) : null,
-			images: p.images ? JSON.parse(p.images) : [],
+			variants: parseJsonField(p.variants, null),
+			images: parseJsonField(p.images, []),
 		}));
 
 	categories = allCategories;
