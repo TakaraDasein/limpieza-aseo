@@ -216,6 +216,7 @@ const categoryColors: Record<string, string> = {
 
           <!-- Products Grid -->
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {categoryProducts.map((product, prodIndex) => {
               const allImages = [product.image, ...(product.images || [])].filter(Boolean);
               if (allImages.length === 0) allImages.push('https://via.placeholder.com/800x1000?text=Sin+Imagen');
               
@@ -413,7 +414,8 @@ const categoryColors: Record<string, string> = {
                 </div>
               </div>
               </div>
-            ))}
+            );
+            })}
           </div>
         </div>
       );
