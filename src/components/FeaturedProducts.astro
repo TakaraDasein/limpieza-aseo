@@ -266,6 +266,10 @@ const isEmpty = sections.length === 0;
     const revealSections = document.querySelectorAll('.reveal-on-scroll');
 
     if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
+      revealSections.forEach((section) => {
+        section.classList.add('reveal-init');
+      });
+
       const revealObserver = new IntersectionObserver(
         (entries, observer) => {
           entries.forEach((entry) => {
@@ -282,7 +286,10 @@ const isEmpty = sections.length === 0;
         revealObserver.observe(section);
       });
     } else {
-      revealSections.forEach((section) => section.classList.add('is-visible'));
+      revealSections.forEach((section) => {
+        section.classList.remove('reveal-init');
+        section.classList.add('is-visible');
+      });
     }
 
     toggleBtns.forEach((btn) => {
@@ -341,40 +348,49 @@ const isEmpty = sections.length === 0;
 
 <style>
   .reveal-on-scroll {
-    opacity: 0;
-    transform: translateY(42px);
+    opacity: 1;
+    transform: translateY(0);
     transition: opacity 700ms ease, transform 700ms ease;
     will-change: opacity, transform;
   }
 
-  .reveal-on-scroll .reveal-image {
-    transform: translateX(-24px);
-    transition: transform 850ms ease;
-  }
-
+  .reveal-on-scroll .reveal-image,
   .reveal-on-scroll .reveal-content {
-    transform: translateX(24px);
+    transform: translateX(0);
     transition: transform 850ms ease;
   }
 
-  .reveal-on-scroll.is-visible {
+  .reveal-on-scroll.reveal-init {
+    opacity: 0;
+    transform: translateY(42px);
+  }
+
+  .reveal-on-scroll.reveal-init .reveal-image {
+    transform: translateX(-24px);
+  }
+
+  .reveal-on-scroll.reveal-init .reveal-content {
+    transform: translateX(24px);
+  }
+
+  .reveal-on-scroll.reveal-init.is-visible {
     opacity: 1;
     transform: translateY(0);
   }
 
-  .reveal-on-scroll.is-visible .reveal-image,
-  .reveal-on-scroll.is-visible .reveal-content {
+  .reveal-on-scroll.reveal-init.is-visible .reveal-image,
+  .reveal-on-scroll.reveal-init.is-visible .reveal-content {
     transform: translateX(0);
   }
 
   @media (max-width: 768px) {
-    .reveal-on-scroll .reveal-image,
-    .reveal-on-scroll .reveal-content {
+    .reveal-on-scroll.reveal-init .reveal-image,
+    .reveal-on-scroll.reveal-init .reveal-content {
       transform: translateY(16px);
     }
 
-    .reveal-on-scroll.is-visible .reveal-image,
-    .reveal-on-scroll.is-visible .reveal-content {
+    .reveal-on-scroll.reveal-init.is-visible .reveal-image,
+    .reveal-on-scroll.reveal-init.is-visible .reveal-content {
       transform: translateY(0);
     }
   }
