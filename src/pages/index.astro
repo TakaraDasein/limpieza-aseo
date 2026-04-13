@@ -28,12 +28,7 @@ try {
 		return value;
 	};
 
-	// Set a timeout for database queries
-	const timeoutPromise = new Promise((_, reject) => 
-		setTimeout(() => reject(new Error('Database query timeout')), 5000)
-	);
-
-	const dbQueryPromise = Promise.all([
+	const [allProducts, allCategories] = await Promise.all([
 		db.select({
 			id: productsTable.id,
 			sku: productsTable.sku,
@@ -50,11 +45,6 @@ try {
 			.from(categoriesTable)
 			.orderBy(categoriesTable.order)
 			.all()
-	]);
-
-	const [allProducts, allCategories] = await Promise.race([
-		dbQueryPromise,
-		timeoutPromise
 	]) as any;
 
 	// Parse variants from JSON string
