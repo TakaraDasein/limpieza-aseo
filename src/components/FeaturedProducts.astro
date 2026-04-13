@@ -6,236 +6,239 @@ interface Props {
 
 const { products = [], categories = [] } = Astro.props;
 
-// Formateador de precios
 const formatPrice = (price: number) => {
   return new Intl.NumberFormat('es-CO', {
     style: 'currency',
     currency: 'COP',
-    minimumFractionDigits: 0
-  }).format(price);
+    minimumFractionDigits: 0,
+  }).format(price || 0);
 };
 
-// Filtrar categorías que tienen al menos un producto activo
-const activeCategories = categories.filter(c => 
-  products.some(p => p.categoryId === c.id && p.active)
+const activeProducts = products.filter((p) => p?.active);
+const activeCategories = categories.filter((c) =>
+  activeProducts.some((p) => p.categoryId === c.id)
 );
 
-// Agrupar categorías en pares para las 3 secciones (max 6 categorías en total)
-const sections = [];
-const maxSections = 3;
-let currentCatIndex = 0;
+const getProductForCategory = (categoryId: string) => {
+  return (
+    activeProducts
+      .filter((p) => p.categoryId === categoryId)
+      .sort((a, b) => (a.order || 0) - (b.order || 0))[0] || null
+  );
+};
 
-for (let i = 0; i < maxSections; i++) {
-  const cat1 = activeCategories[currentCatIndex % activeCategories.length];
-  const cat2 = activeCategories[(currentCatIndex + 1) % activeCategories.length];
-  
-  if (cat1) {
-    const cat1Products = products.filter(p => p.categoryId === cat1.id && p.active);
-    const cat2Products = cat2 ? products.filter(p => p.categoryId === cat2.id && p.active) : [];
-
-    if (cat1Products.length > 0 || cat2Products.length > 0) {
-      sections.push({
-        id: `section-${i}`,
-        cat1: cat1,
-        cat1Products,
-        cat2: cat1.id !== cat2?.id ? cat2 : null,
-        cat2Products: cat1.id !== cat2?.id ? cat2Products : [],
-        reverse: i % 2 !== 0
-      });
-    }
+const getProductImage = (product: any) => {
+  if (!product) return 'https://via.placeholder.com/800x1000?text=Sin+Imagen';
+  if (product.image) return product.image;
+  if (Array.isArray(product.images) && product.images.length > 0 && product.images[0]) {
+    return product.images[0];
   }
-  
-  currentCatIndex += 2;
-  if (currentCatIndex >= activeCategories.length && sections.length > 0) {
-    // Stop early if we don't have enough categories to fill 3 sections uniquely,
-    // though the modulo above recycles. Let's let it recycle if needed.
-  }
-}
-
-const isEmpty = sections.length === 0;
+  return 'https://via.placeholder.com/800x1000?text=Sin+Imagen';
+};
 
 const getFeatures = (product: any) => {
-  if (product.variants && Array.isArray(product.variants) && product.variants.length > 0) {
-    return product.variants.map((v: any) => v.name || v.value).slice(0, 3);
+  if (!product) return [];
+  if (Array.isArray(product.variants) && product.variants.length > 0) {
+    return product.variants
+      .map((v: any) => (typeof v === 'string' ? v : v?.name || v?.value || 'Variante'))
+      .filter(Boolean)
+      .slice(0, 3);
   }
   return [
     'Calidad profesional garantizada.',
     'Rendimiento superior en limpieza.',
-    'Producto de alta durabilidad.'
+    'Producto de alta durabilidad.',
   ];
 };
+
+const sections: Array<any> = [];
+const maxSections = 3;
+
+if (activeCategories.length > 0) {
+  for (let i = 0; i < maxSections; i++) {
+    const c1 = activeCategories[(i * 2) % activeCategories.length];
+    const c2 = activeCategories[(i * 2 + 1) % activeCategories.length];
+
+    const cat1 = c1 || null;
+    const cat2 = c2 && c2.id !== c1?.id ? c2 : null;
+    const cat1Product = cat1 ? getProductForCategory(cat1.id) : null;
+    const cat2Product = cat2 ? getProductForCategory(cat2.id) : null;
+
+    if (cat1Product || cat2Product) {
+      sections.push({
+        id: `section-${i + 1}`,
+        reverse: i % 2 === 1,
+        cat1,
+        cat2,
+        cat1Product,
+        cat2Product,
+      });
+    }
+  }
+}
+
+const isEmpty = sections.length === 0;
 ---
 
 <section class="py-0" id="featured-products">
   {isEmpty && (
     <div class="py-20 text-center text-on-surface-variant">
-      <h2 class="text-3xl font-bold mb-4">Próximamente</h2>
-      <p>Nuestro catálogo se está actualizando con nuevos productos.</p>
+      <h2 class="text-3xl font-bold mb-4">Proximamente</h2>
+      <p>Nuestro catalogo se esta actualizando con nuevos productos.</p>
     </div>
   )}
 
-  {!isEmpty && sections.map((section, index) => (
-    <div class={`group relative flex flex-col ${section.reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px] ${index % 2 === 0 ? 'bg-white' : 'bg-surface-container-low'} overflow-hidden border-b border-surface-container-high`} data-section={section.id}>
-      
-      <!-- Image Section -->
-      <div class="w-full md:w-1/2 h-[300px] sm:h-[400px] md:h-full relative overflow-hidden">
-        {section.cat1Products[0] && (
-          <img 
-            class={`featured-image absolute inset-0 w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 transform scale-100 group-hover:scale-105 image-cat1-${section.id} opacity-100 z-10`} 
-            alt={section.cat1Products[0].name}
-            src={section.cat1Products[0].image || 'https://via.placeholder.com/800x1000?text=Sin+Imagen'}
-          />
-        )}
-        {section.cat2 && section.cat2Products[0] && (
-          <img 
-            class={`featured-image absolute inset-0 w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-1000 transform scale-100 group-hover:scale-105 image-cat2-${section.id} opacity-0 z-0`} 
-            alt={section.cat2Products[0].name}
-            src={section.cat2Products[0].image || 'https://via.placeholder.com/800x1000?text=Sin+Imagen'}
-          />
-        )}
-        <div class="absolute inset-0 bg-primary/5 z-20 pointer-events-none"></div>
-      </div>
-      
-      <!-- Content Section -->
-      <div class="w-full md:w-1/2 p-6 sm:p-8 md:p-10 lg:p-16 xl:p-20 relative flex flex-col items-center justify-center">
-        
-        {section.cat2 && (
-          <div class="flex gap-4 mb-8 bg-surface-container p-1 rounded-full w-max mx-auto md:mx-0 shadow-sm border border-surface-container-high relative z-30">
-            <button 
-              class={`cat-toggle-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 cat1-btn-${section.id} bg-primary text-on-primary shadow-md`}
-              data-target={`cat1-${section.id}`}
-              data-section={section.id}
-            >
-              {section.cat1.name}
-            </button>
-            <button 
-              class={`cat-toggle-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 cat2-btn-${section.id} text-on-surface hover:bg-surface-container-highest`}
-              data-target={`cat2-${section.id}`}
-              data-section={section.id}
-            >
-              {section.cat2.name}
-            </button>
-          </div>
-        )}
-        
-        <div class="max-w-xl mx-auto w-full relative min-h-[400px]">
-          
-          {/* Content Cat 1 */}
-          <div class={`product-content absolute inset-0 transition-opacity duration-500 opacity-100 pointer-events-auto content-cat1-${section.id}`}>
-            {section.cat1Products[0] && (() => {
-              const product = section.cat1Products[0];
-              return (
+  {!isEmpty &&
+    sections.map((section, index) => (
+      <div
+        class={`group relative flex flex-col ${section.reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px] ${index % 2 === 0 ? 'bg-white' : 'bg-surface-container-low'} overflow-hidden border-b border-surface-container-high`}
+        data-section={section.id}
+      >
+        <div class="w-full md:w-1/2 h-[300px] sm:h-[400px] md:h-full relative overflow-hidden">
+          {section.cat1Product && (
+            <img
+              class={`absolute inset-0 w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700 transform scale-100 group-hover:scale-105 image-cat1-${section.id} opacity-100 z-10`}
+              alt={section.cat1Product.name}
+              src={getProductImage(section.cat1Product)}
+              loading="lazy"
+            />
+          )}
+
+          {section.cat2Product && (
+            <img
+              class={`absolute inset-0 w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700 transform scale-100 group-hover:scale-105 image-cat2-${section.id} opacity-0 z-0`}
+              alt={section.cat2Product.name}
+              src={getProductImage(section.cat2Product)}
+              loading="lazy"
+            />
+          )}
+
+          <div class="absolute inset-0 bg-primary/5 z-20 pointer-events-none"></div>
+        </div>
+
+        <div class="w-full md:w-1/2 p-6 sm:p-8 md:p-10 lg:p-16 xl:p-20 relative flex flex-col items-center justify-center">
+          {section.cat2 && (
+            <div class="flex gap-4 mb-8 bg-surface-container p-1 rounded-full w-max mx-auto md:mx-0 shadow-sm border border-surface-container-high relative z-30">
+              <button
+                class={`cat-toggle-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 cat1-btn-${section.id} bg-primary text-on-primary shadow-md`}
+                data-target={`cat1-${section.id}`}
+                data-section={section.id}
+              >
+                {section.cat1.name}
+              </button>
+              <button
+                class={`cat-toggle-btn px-6 py-2 rounded-full text-sm font-bold transition-all duration-300 cat2-btn-${section.id} text-on-surface hover:bg-surface-container-highest`}
+                data-target={`cat2-${section.id}`}
+                data-section={section.id}
+              >
+                {section.cat2.name}
+              </button>
+            </div>
+          )}
+
+          <div class="max-w-xl mx-auto w-full relative min-h-[400px]">
+            {section.cat1Product && (
+              <div class={`product-content absolute inset-0 transition-opacity duration-500 opacity-100 pointer-events-auto content-cat1-${section.id}`}>
                 <div class="h-full flex flex-col justify-center">
                   <span class="text-primary font-bold tracking-[0.2em] md:tracking-[0.25em] lg:tracking-[0.3em] uppercase text-xs md:text-xs lg:text-sm mb-4 md:mb-5 lg:mb-6 block">
                     {section.cat1.name}
                   </span>
-                  
+
                   <h2 class="font-headline text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-extrabold text-primary mb-6 tracking-tighter">
-                    {product.name}
+                    {section.cat1Product.name}
                   </h2>
-                  
+
                   <p class="text-on-surface-variant text-base lg:text-lg leading-relaxed mb-8 line-clamp-4">
-                    {product.description || 'Producto de calidad premium para limpieza profesional.'}
+                    {section.cat1Product.description || 'Producto de calidad premium para limpieza profesional.'}
                   </p>
-                  
+
                   <div class="space-y-4 mb-8">
-                    {getFeatures(product).map((feature: string) => (
+                    {getFeatures(section.cat1Product).map((feature: string) => (
                       <div class="flex items-start gap-3">
-                        <span class="material-symbols-outlined text-secondary text-xl flex-shrink-0">
-                          check_circle
-                        </span>
+                        <span class="material-symbols-outlined text-secondary text-xl flex-shrink-0">check_circle</span>
                         <p class="text-on-surface font-medium text-sm lg:text-base">{feature}</p>
                       </div>
                     ))}
                   </div>
-                  
+
                   <div class="mt-auto flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-surface-container-high pt-6 gap-6 sm:gap-4">
                     <div class="flex flex-col">
-                      <span class="text-on-surface-variant text-xs font-semibold mb-1">Inversión</span>
-                      <span class="text-3xl font-extrabold text-primary">{formatPrice(product.price)}</span>
+                      <span class="text-on-surface-variant text-xs font-semibold mb-1">Inversion</span>
+                      <span class="text-3xl font-extrabold text-primary">{formatPrice(section.cat1Product.price)}</span>
                     </div>
-                    <button 
+                    <button
                       class="bg-primary text-on-primary px-6 py-3 rounded-full font-bold text-sm hover:scale-95 transition-all flex items-center gap-2 w-full sm:w-auto justify-center"
-                      onclick={`window.open('https://wa.me/573115412230?text=Hola%2C%20quiero%20información%20sobre%20${encodeURIComponent(product.name)}', '_blank')`}
+                      onclick={`window.open('https://wa.me/573115412230?text=Hola%2C%20quiero%20informacion%20sobre%20${encodeURIComponent(section.cat1Product.name)}', '_blank')`}
                     >
-                      Añadir al carrito <span class="material-symbols-outlined text-lg">shopping_bag</span>
+                      Consultar <span class="material-symbols-outlined text-lg">shopping_bag</span>
                     </button>
                   </div>
                 </div>
-              );
-            })()}
-          </div>
-          
-          {/* Content Cat 2 */}
-          {section.cat2 && section.cat2Products[0] && (
-            <div class={`product-content absolute inset-0 transition-opacity duration-500 opacity-0 pointer-events-none content-cat2-${section.id}`}>
-              {(() => {
-                const product = section.cat2Products[0];
-                return (
-                  <div class="h-full flex flex-col justify-center">
-                    <span class="text-primary font-bold tracking-[0.2em] md:tracking-[0.25em] lg:tracking-[0.3em] uppercase text-xs md:text-xs lg:text-sm mb-4 md:mb-5 lg:mb-6 block">
-                      {section.cat2.name}
-                    </span>
-                    
-                    <h2 class="font-headline text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-extrabold text-primary mb-6 tracking-tighter">
-                      {product.name}
-                    </h2>
-                    
-                    <p class="text-on-surface-variant text-base lg:text-lg leading-relaxed mb-8 line-clamp-4">
-                      {product.description || 'Producto de calidad premium para limpieza profesional.'}
-                    </p>
-                    
-                    <div class="space-y-4 mb-8">
-                      {getFeatures(product).map((feature: string) => (
-                        <div class="flex items-start gap-3">
-                          <span class="material-symbols-outlined text-secondary text-xl flex-shrink-0">
-                            check_circle
-                          </span>
-                          <p class="text-on-surface font-medium text-sm lg:text-base">{feature}</p>
-                        </div>
-                      ))}
-                    </div>
-                    
-                    <div class="mt-auto flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-surface-container-high pt-6 gap-6 sm:gap-4">
-                      <div class="flex flex-col">
-                        <span class="text-on-surface-variant text-xs font-semibold mb-1">Inversión</span>
-                        <span class="text-3xl font-extrabold text-primary">{formatPrice(product.price)}</span>
+              </div>
+            )}
+
+            {section.cat2Product && (
+              <div class={`product-content absolute inset-0 transition-opacity duration-500 opacity-0 pointer-events-none content-cat2-${section.id}`}>
+                <div class="h-full flex flex-col justify-center">
+                  <span class="text-primary font-bold tracking-[0.2em] md:tracking-[0.25em] lg:tracking-[0.3em] uppercase text-xs md:text-xs lg:text-sm mb-4 md:mb-5 lg:mb-6 block">
+                    {section.cat2.name}
+                  </span>
+
+                  <h2 class="font-headline text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-extrabold text-primary mb-6 tracking-tighter">
+                    {section.cat2Product.name}
+                  </h2>
+
+                  <p class="text-on-surface-variant text-base lg:text-lg leading-relaxed mb-8 line-clamp-4">
+                    {section.cat2Product.description || 'Producto de calidad premium para limpieza profesional.'}
+                  </p>
+
+                  <div class="space-y-4 mb-8">
+                    {getFeatures(section.cat2Product).map((feature: string) => (
+                      <div class="flex items-start gap-3">
+                        <span class="material-symbols-outlined text-secondary text-xl flex-shrink-0">check_circle</span>
+                        <p class="text-on-surface font-medium text-sm lg:text-base">{feature}</p>
                       </div>
-                      <button 
-                        class="bg-primary text-on-primary px-6 py-3 rounded-full font-bold text-sm hover:scale-95 transition-all flex items-center gap-2 w-full sm:w-auto justify-center"
-                        onclick={`window.open('https://wa.me/573115412230?text=Hola%2C%20quiero%20información%20sobre%20${encodeURIComponent(product.name)}', '_blank')`}
-                      >
-                        Añadir al carrito <span class="material-symbols-outlined text-lg">shopping_bag</span>
-                      </button>
-                    </div>
+                    ))}
                   </div>
-                );
-              })()}
-            </div>
-          )}
+
+                  <div class="mt-auto flex flex-col sm:flex-row items-start sm:items-center justify-between border-t border-surface-container-high pt-6 gap-6 sm:gap-4">
+                    <div class="flex flex-col">
+                      <span class="text-on-surface-variant text-xs font-semibold mb-1">Inversion</span>
+                      <span class="text-3xl font-extrabold text-primary">{formatPrice(section.cat2Product.price)}</span>
+                    </div>
+                    <button
+                      class="bg-primary text-on-primary px-6 py-3 rounded-full font-bold text-sm hover:scale-95 transition-all flex items-center gap-2 w-full sm:w-auto justify-center"
+                      onclick={`window.open('https://wa.me/573115412230?text=Hola%2C%20quiero%20informacion%20sobre%20${encodeURIComponent(section.cat2Product.name)}', '_blank')`}
+                    >
+                      Consultar <span class="material-symbols-outlined text-lg">shopping_bag</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
-  ))}
+    ))}
 </section>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const toggleBtns = document.querySelectorAll('.cat-toggle-btn');
-    
-    toggleBtns.forEach(btn => {
+
+    toggleBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const target = e.currentTarget as HTMLButtonElement;
         const sectionId = target.getAttribute('data-section');
         const targetCat = target.getAttribute('data-target');
-        
+
         if (!sectionId || !targetCat) return;
-        
+
         const isCat1 = targetCat.startsWith('cat1');
-        
+
         const btn1 = document.querySelector(`.cat1-btn-${sectionId}`);
         const btn2 = document.querySelector(`.cat2-btn-${sectionId}`);
-        
+
         if (isCat1) {
           btn1?.classList.add('bg-primary', 'text-on-primary', 'shadow-md');
           btn1?.classList.remove('text-on-surface', 'hover:bg-surface-container-highest');
@@ -247,28 +250,30 @@ const getFeatures = (product: any) => {
           btn1?.classList.remove('bg-primary', 'text-on-primary', 'shadow-md');
           btn1?.classList.add('text-on-surface', 'hover:bg-surface-container-highest');
         }
-        
+
         const content1 = document.querySelector(`.content-cat1-${sectionId}`);
         const content2 = document.querySelector(`.content-cat2-${sectionId}`);
         const img1 = document.querySelector(`.image-cat1-${sectionId}`);
         const img2 = document.querySelector(`.image-cat2-${sectionId}`);
-        
+
         if (isCat1) {
           content1?.classList.replace('opacity-0', 'opacity-100');
           content1?.classList.replace('pointer-events-none', 'pointer-events-auto');
           content2?.classList.replace('opacity-100', 'opacity-0');
           content2?.classList.replace('pointer-events-auto', 'pointer-events-none');
-          
-          if (img1) { img1.classList.replace('opacity-0', 'opacity-100'); img1.classList.replace('z-0', 'z-10'); }
-          if (img2) { img2.classList.replace('opacity-100', 'opacity-0'); img2.classList.replace('z-10', 'z-0'); }
+          img1?.classList.replace('opacity-0', 'opacity-100');
+          img1?.classList.replace('z-0', 'z-10');
+          img2?.classList.replace('opacity-100', 'opacity-0');
+          img2?.classList.replace('z-10', 'z-0');
         } else {
           content2?.classList.replace('opacity-0', 'opacity-100');
           content2?.classList.replace('pointer-events-none', 'pointer-events-auto');
           content1?.classList.replace('opacity-100', 'opacity-0');
           content1?.classList.replace('pointer-events-auto', 'pointer-events-none');
-          
-          if (img2) { img2.classList.replace('opacity-0', 'opacity-100'); img2.classList.replace('z-0', 'z-10'); }
-          if (img1) { img1.classList.replace('opacity-100', 'opacity-0'); img1.classList.replace('z-10', 'z-0'); }
+          img2?.classList.replace('opacity-0', 'opacity-100');
+          img2?.classList.replace('z-0', 'z-10');
+          img1?.classList.replace('opacity-100', 'opacity-0');
+          img1?.classList.replace('z-10', 'z-0');
         }
       });
     });
