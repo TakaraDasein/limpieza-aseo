@@ -106,10 +106,11 @@ const isEmpty = sections.length === 0;
   {!isEmpty &&
     sections.map((section, index) => (
       <div
-        class={`group relative flex flex-col ${section.reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px] ${index % 2 === 0 ? 'bg-white' : 'bg-surface-container-low'} overflow-hidden border-b border-surface-container-high`}
+        class={`group reveal-on-scroll relative flex flex-col ${section.reverse ? 'md:flex-row-reverse' : 'md:flex-row'} items-center min-h-[600px] md:min-h-[700px] lg:min-h-[800px] ${index % 2 === 0 ? 'bg-white' : 'bg-surface-container-low'} overflow-hidden border-b border-surface-container-high`}
         data-section={section.id}
+        style={`transition-delay: ${index * 120}ms;`}
       >
-        <div class="w-full md:w-1/2 h-[300px] sm:h-[400px] md:h-full relative overflow-hidden">
+        <div class="reveal-image w-full md:w-1/2 h-[300px] sm:h-[400px] md:h-full relative overflow-hidden">
           {section.cat1Products.length > 0 && (
             <img
               class={`absolute inset-0 w-full h-full object-cover grayscale-[0.2] group-hover:grayscale-0 transition-all duration-700 transform scale-100 group-hover:scale-105 image-cat1-${section.id} opacity-100 z-10`}
@@ -131,7 +132,7 @@ const isEmpty = sections.length === 0;
           <div class="absolute inset-0 bg-primary/5 z-20 pointer-events-none"></div>
         </div>
 
-        <div class="w-full md:w-1/2 p-6 sm:p-8 md:p-10 lg:p-16 xl:p-20 relative flex flex-col items-center justify-center">
+        <div class="reveal-content w-full md:w-1/2 p-6 sm:p-8 md:p-10 lg:p-16 xl:p-20 relative flex flex-col items-center justify-center">
           {section.cat2 && section.cat2Products.length > 0 && (
             <div class="flex gap-4 mb-8 bg-surface-container p-1 rounded-full w-max mx-auto md:mx-0 shadow-sm border border-surface-container-high relative z-30">
               <button
@@ -262,6 +263,27 @@ const isEmpty = sections.length === 0;
 <script>
   document.addEventListener('DOMContentLoaded', () => {
     const toggleBtns = document.querySelectorAll('.cat-toggle-btn');
+    const revealSections = document.querySelectorAll('.reveal-on-scroll');
+
+    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
+      const revealObserver = new IntersectionObserver(
+        (entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.18, rootMargin: '0px 0px -10% 0px' }
+      );
+
+      revealSections.forEach((section) => {
+        revealObserver.observe(section);
+      });
+    } else {
+      revealSections.forEach((section) => section.classList.add('is-visible'));
+    }
 
     toggleBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
@@ -316,3 +338,44 @@ const isEmpty = sections.length === 0;
     });
   });
 </script>
+
+<style>
+  .reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(42px);
+    transition: opacity 700ms ease, transform 700ms ease;
+    will-change: opacity, transform;
+  }
+
+  .reveal-on-scroll .reveal-image {
+    transform: translateX(-24px);
+    transition: transform 850ms ease;
+  }
+
+  .reveal-on-scroll .reveal-content {
+    transform: translateX(24px);
+    transition: transform 850ms ease;
+  }
+
+  .reveal-on-scroll.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-on-scroll.is-visible .reveal-image,
+  .reveal-on-scroll.is-visible .reveal-content {
+    transform: translateX(0);
+  }
+
+  @media (max-width: 768px) {
+    .reveal-on-scroll .reveal-image,
+    .reveal-on-scroll .reveal-content {
+      transform: translateY(16px);
+    }
+
+    .reveal-on-scroll.is-visible .reveal-image,
+    .reveal-on-scroll.is-visible .reveal-content {
+      transform: translateY(0);
+    }
+  }
+</style>
