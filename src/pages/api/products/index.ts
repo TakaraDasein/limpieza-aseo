@@ -14,6 +14,7 @@ export const GET: APIRoute = async () => {
       categoryId: products.categoryId,
       price: products.price,
       image: products.image,
+      images: products.images,
       variants: products.variants,
       active: products.active,
       order: products.order,
@@ -23,10 +24,11 @@ export const GET: APIRoute = async () => {
       .leftJoin(categories, eq(products.categoryId, categories.id))
       .all();
 
-    // Parse variants from JSON string
+    // Parse JSON fields
     const parsedProducts = allProducts.map(p => ({
       ...p,
       variants: p.variants ? JSON.parse(p.variants) : null,
+      images: p.images ? (typeof p.images === 'string' ? JSON.parse(p.images) : p.images) : [],
     }));
 
     return new Response(JSON.stringify(parsedProducts), {
@@ -64,8 +66,9 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    // Prepare variants as JSON string
+    // Prepare JSON fields
     const variantsJson = body.variants ? JSON.stringify(body.variants) : null;
+    const imagesJson = body.images ? JSON.stringify(body.images) : null;
 
     const newProduct = await db.insert(products).values({
       sku: body.sku,
@@ -74,6 +77,7 @@ export const POST: APIRoute = async ({ request }) => {
       categoryId: body.categoryId || null,
       price: parseInt(body.price),
       image: body.image || null,
+      images: imagesJson,
       variants: variantsJson,
       active: body.active !== undefined ? body.active : true,
       order: body.order || 0,

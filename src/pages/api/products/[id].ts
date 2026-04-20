@@ -35,6 +35,7 @@ export const GET: APIRoute = async ({ params }) => {
     const parsedProduct = {
       ...product,
       variants: product.variants ? JSON.parse(product.variants) : null,
+      images: product.images ? (typeof product.images === 'string' ? JSON.parse(product.images) : product.images) : [],
     };
 
     return new Response(JSON.stringify(parsedProduct), {
@@ -81,6 +82,7 @@ export const PUT: APIRoute = async ({ params, request }) => {
     if (body.categoryId !== undefined) updateData.categoryId = body.categoryId || null;
     if (body.price !== undefined) updateData.price = parseInt(body.price);
     if (body.image !== undefined) updateData.image = body.image || null;
+    if (body.images !== undefined) updateData.images = body.images ? JSON.stringify(body.images) : null;
     if (body.variants !== undefined) updateData.variants = body.variants ? JSON.stringify(body.variants) : null;
     if (body.active !== undefined) updateData.active = body.active;
     if (body.order !== undefined) updateData.order = body.order || 0;

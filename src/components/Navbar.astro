@@ -1,28 +1,28 @@
 ---
 ---
 
-<nav class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-xl shadow-[0px_10px_30px_rgba(0,0,0,0.05)] border-b border-surface-container-highest/50">
-  <div class="flex justify-between items-center px-6 md:px-12 py-5 max-w-screen-2xl mx-auto font-['Plus_Jakarta_Sans'] tracking-tight text-sm font-semibold">
-    <a href="/" class="flex items-center z-50">
-      <img src="/logo-h.png" alt="Mister LyA" class="h-12 w-auto" />
+<nav class="navbar-animate fixed top-0 w-full z-[100] bg-white/95 backdrop-blur-xl shadow-[0px_10px_30px_rgba(0,0,0,0.05)] border-b border-surface-container-highest/50">
+  <div class="flex justify-between items-center px-4 md:px-8 py-2.5 max-w-screen-2xl mx-auto font-['Plus_Jakarta_Sans'] tracking-tight text-sm font-semibold">
+    <a href="/" class="flex items-center z-[110]">
+      <img src="/logo-h.png" alt="Mister LyA" class="h-9 w-auto" />
     </a>
     
-    <div class="hidden md:flex items-center gap-10">
-      <a class="text-slate-600 hover:text-primary transition-colors relative group" href="/">
+    <div class="hidden md:flex items-center gap-6">
+      <a class="text-slate-500 hover:text-primary transition-colors duration-200 flex items-center gap-1 text-[11px] font-medium" href="/">
+        <span class="material-symbols-outlined text-[10px]">home</span>
         <span>Inicio</span>
-        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
       </a>
-      <a class="text-slate-600 hover:text-primary transition-colors relative group" href="/catalogo">
+      <a class="text-slate-500 hover:text-primary transition-colors duration-200 flex items-center gap-1 text-[11px] font-medium" href="/catalogo">
+        <span class="material-symbols-outlined text-[10px]">menu_book</span>
         <span>Catálogo</span>
-        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
       </a>
-      <a class="text-slate-600 hover:text-primary transition-colors relative group" href="/#mision">
+      <a class="text-slate-500 hover:text-primary transition-colors duration-200 flex items-center gap-1 text-[11px] font-medium" href="/#mision">
+        <span class="material-symbols-outlined text-[10px]">favorite</span>
         <span>Nuestra Esencia</span>
-        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
       </a>
-      <a class="text-slate-600 hover:text-primary transition-colors relative group flex items-center" href="https://wa.me/573115412230" target="_blank">
+      <a class="text-slate-500 hover:text-primary transition-colors duration-200 flex items-center gap-1 text-[11px] font-medium" href="https://wa.me/573115412230" target="_blank">
+        <span class="material-symbols-outlined text-[10px]">chat</span>
         <span>Contacto</span>
-        <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-primary group-hover:w-full transition-all duration-300"></span>
       </a>
     </div>
     
@@ -30,70 +30,80 @@
       <!-- Admin/User Icon (Desktop) -->
       <a 
         href="/login" 
-        class="hidden md:flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 hover:bg-primary hover:scale-105 transition-all duration-300 group"
+        class="hidden md:flex items-center justify-center hover:scale-110 transition-transform duration-300"
         aria-label="Admin Panel"
         title="Panel Administrativo"
       >
-        <span class="material-symbols-outlined text-primary group-hover:text-white transition-colors">account_circle</span>
+        <span class="material-symbols-outlined text-2xl text-primary hover:text-secondary transition-colors">badge</span>
       </a>
       
       <!-- Mobile menu button -->
-      <button class="md:hidden relative w-10 h-10 flex flex-col items-center justify-center gap-1.5 z-50" id="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+      <button class="md:hidden relative w-10 h-10 flex flex-col items-center justify-center gap-1.5 z-[110]" id="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
         <span class="hamburger-line w-6 h-0.5 bg-primary transition-all duration-300"></span>
         <span class="hamburger-line w-6 h-0.5 bg-primary transition-all duration-300"></span>
         <span class="hamburger-line w-6 h-0.5 bg-primary transition-all duration-300"></span>
       </button>
     </div>
   </div>
-  
-  <!-- Mobile menu overlay -->
-  <div id="mobile-menu" class="md:hidden fixed inset-0 bg-black/40 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-40">
-    <!-- Slide-in menu panel -->
-    <div id="mobile-menu-panel" class="absolute right-0 top-0 h-full w-80 bg-white shadow-2xl transform translate-x-full transition-transform duration-300">
-      <div class="flex flex-col h-full pt-24 px-8">
-        <!-- Menu items -->
-        <div class="flex flex-col gap-2">
-          <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary transition-all py-4 border-b border-surface-container-highest" href="/">
-            <span class="material-symbols-outlined text-2xl text-primary">home</span>
-            <span class="font-semibold text-lg">Inicio</span>
-            <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform">arrow_forward</span>
-          </a>
-          <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary transition-all py-4 border-b border-surface-container-highest" href="/catalogo">
-            <span class="material-symbols-outlined text-2xl text-primary">grid_view</span>
-            <span class="font-semibold text-lg">Catálogo</span>
-            <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform">arrow_forward</span>
-          </a>
-          <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary transition-all py-4 border-b border-surface-container-highest" href="/#mision">
-            <span class="material-symbols-outlined text-2xl text-primary">stars</span>
-            <span class="font-semibold text-lg">Nuestra Esencia</span>
-            <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform">arrow_forward</span>
-          </a>
-          <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary transition-all py-4 border-b border-surface-container-highest" href="https://wa.me/573115412230" target="_blank">
-            <span class="material-symbols-outlined text-2xl text-green-600">chat</span>
-            <span class="font-semibold text-lg">Contacto</span>
-            <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform">open_in_new</span>
-          </a>
-          <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary transition-all py-4 border-b border-surface-container-highest" href="/login">
-            <span class="material-symbols-outlined text-2xl text-primary">admin_panel_settings</span>
-            <span class="font-semibold text-lg">Panel Admin</span>
-            <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform">arrow_forward</span>
-          </a>
-        </div>
-        
-        <!-- WhatsApp CTA -->
-        <div class="mt-auto mb-8">
-          <a href="https://wa.me/573115412230" target="_blank" class="flex items-center justify-center gap-3 bg-green-600 text-white rounded-xl py-4 px-6 hover:bg-green-700 transition-all shadow-lg hover:shadow-xl">
-            <span class="material-symbols-outlined text-2xl">phone</span>
-            <span class="font-bold">311 541 2230</span>
-          </a>
-        </div>
+</nav>
+
+<!-- Mobile menu overlay - OUTSIDE nav for proper z-index stacking -->
+<div id="mobile-menu" class="md:hidden fixed inset-0 bg-black/60 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 z-[9999]">
+  <!-- Slide-in menu panel -->
+  <div id="mobile-menu-panel" class="absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl transform translate-x-full transition-transform duration-300 overflow-y-auto z-[10000]">
+    <!-- Close button at top -->
+    <div class="flex items-center justify-between p-4 border-b border-gray-100 bg-white">
+      <img src="/logo-h.png" alt="Mister LyA" class="h-8 w-auto" />
+      <button id="mobile-menu-close" class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
+        <span class="material-symbols-outlined text-xl text-gray-600">close</span>
+      </button>
+    </div>
+    
+    <div class="flex flex-col h-[calc(100%-72px)] pt-4 px-6 bg-white">
+      <!-- Menu items -->
+      <div class="flex flex-col gap-1">
+        <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary hover:bg-primary/5 transition-all py-3.5 px-3 rounded-xl" href="/">
+          <span class="material-symbols-outlined text-xl text-primary">home</span>
+          <span class="font-semibold text-base">Inicio</span>
+          <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform text-lg">arrow_forward</span>
+        </a>
+        <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary hover:bg-primary/5 transition-all py-3.5 px-3 rounded-xl" href="/catalogo">
+          <span class="material-symbols-outlined text-xl text-primary">grid_view</span>
+          <span class="font-semibold text-base">Catálogo</span>
+          <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform text-lg">arrow_forward</span>
+        </a>
+        <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary hover:bg-primary/5 transition-all py-3.5 px-3 rounded-xl" href="/#mision">
+          <span class="material-symbols-outlined text-xl text-primary">stars</span>
+          <span class="font-semibold text-base">Nuestra Esencia</span>
+          <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform text-lg">arrow_forward</span>
+        </a>
+        <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary hover:bg-primary/5 transition-all py-3.5 px-3 rounded-xl" href="https://wa.me/573115412230" target="_blank">
+          <span class="material-symbols-outlined text-xl text-green-600">chat</span>
+          <span class="font-semibold text-base">Contacto</span>
+          <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform text-lg">open_in_new</span>
+        </a>
+        <a class="menu-item group flex items-center gap-4 text-slate-700 hover:text-primary hover:bg-primary/5 transition-all py-3.5 px-3 rounded-xl" href="/login">
+          <span class="material-symbols-outlined text-xl text-primary">admin_panel_settings</span>
+          <span class="font-semibold text-base">Panel Admin</span>
+          <span class="material-symbols-outlined ml-auto text-slate-400 group-hover:translate-x-1 transition-transform text-lg">arrow_forward</span>
+        </a>
+      </div>
+      
+      <!-- WhatsApp CTA -->
+      <div class="mt-auto mb-6 pt-4">
+        <a href="https://wa.me/573115412230" target="_blank" class="flex items-center justify-center gap-3 bg-green-600 text-white rounded-xl py-3.5 px-5 hover:bg-green-700 transition-all shadow-lg hover:shadow-xl">
+          <span class="material-symbols-outlined text-xl">phone</span>
+          <span class="font-bold text-sm">311 541 2230</span>
+        </a>
       </div>
     </div>
   </div>
+</div>
 </nav>
 
 <script>
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenuClose = document.getElementById('mobile-menu-close');
   const mobileMenu = document.getElementById('mobile-menu');
   const mobileMenuPanel = document.getElementById('mobile-menu-panel');
   const hamburgerLines = mobileMenuBtn?.querySelectorAll('.hamburger-line');
@@ -135,6 +145,7 @@
   }
   
   mobileMenuBtn?.addEventListener('click', toggleMenu);
+  mobileMenuClose?.addEventListener('click', toggleMenu);
   
   // Close menu when clicking overlay
   mobileMenu?.addEventListener('click', (e) => {
@@ -158,3 +169,20 @@
     }
   });
 </script>
+
+<style>
+  .navbar-animate {
+    animation: slideDown 0.6s ease-out forwards;
+  }
+  
+  @keyframes slideDown {
+    from {
+      transform: translateY(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+</style>

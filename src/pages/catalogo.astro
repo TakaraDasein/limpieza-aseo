@@ -34,6 +34,7 @@ try {
 			categoryId: productsTable.categoryId,
 			price: productsTable.price,
 			image: productsTable.image,
+			images: productsTable.images,
 			variants: productsTable.variants,
 			active: productsTable.active,
 			order: productsTable.order,
@@ -44,12 +45,13 @@ try {
 			.all()
 	]) as any;
 
-	// Parse variants from JSON string and filter only active products
+	// Parse JSON fields and filter only active products
 	products = allProducts
 		.filter((p: any) => p.active === true)
 		.map((p: any) => ({
 			...p,
 			variants: parseJsonField(p.variants, null),
+			images: parseJsonField(p.images, []),
 		}));
 
 	categories = allCategories;
@@ -65,7 +67,7 @@ try {
 >
 	<Navbar />
 	
-	<main class="pt-20">
+	<main class="pt-14">
 		{fetchError ? (
 			<div class="min-h-screen flex items-center justify-center bg-surface-container-low">
 				<div class="text-center p-8 max-w-md">
@@ -90,5 +92,5 @@ try {
 	</main>
 	
 	<Footer />
-	<WhatsAppButton />
+	<WhatsAppButton position="left" />
 </Layout>
