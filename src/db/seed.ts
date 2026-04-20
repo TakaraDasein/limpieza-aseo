@@ -87,6 +87,7 @@ async function seed() {
         categoryId: product.category,
         price: product.price, // Price is already in COP (not cents)
         image: product.image || null,
+        images: product.images ? JSON.stringify(product.images) : null,
         variants: product.variants ? JSON.stringify(product.variants) : null,
         active: product.active,
         order: product.order,
