@@ -1,7 +1,8 @@
 ---
 import AdminLayout from '../../../layouts/AdminLayout.astro';
+import ImageUploader from '../../../components/admin/ImageUploader.astro';
 import { db } from '../../../db';
-import { categories } from '../../../db/schema';
+import { categories, products } from '../../../db/schema';
 import { eq } from 'drizzle-orm';
 
 let error = '';
@@ -70,6 +71,33 @@ if (Astro.request.method === 'POST') {
 
 // Fetch all categories
 const allCategories = await db.select().from(categories).orderBy(categories.order).all();
+
+// Fetch all product images for the image selector
+const allProducts = await db.select({
+  image: products.image,
+  images: products.images,
+  name: products.name,
+  sku: products.sku,
+}).from(products).where(eq(products.active, true)).all();
+
+// Build a list of all available images
+const availableImages: string[] = [];
+allProducts.forEach(product => {
+  if (product.image) availableImages.push(product.image);
+  if (product.images) {
+    try {
+      const parsedImages = typeof product.images === 'string' ? JSON.parse(product.images) : product.images;
+      if (Array.isArray(parsedImages)) {
+        availableImages.push(...parsedImages);
+      }
+    } catch (e) {
+      // Ignore parsing errors
+    }
+  }
+});
+
+// Remove duplicates
+const uniqueImages = [...new Set(availableImages)];
 ---
 
 <AdminLayout title="Categorías | Admin Panel">
@@ -247,10 +275,12 @@ const allCategories = await db.select().from(categories).orderBy(categories.orde
             </div>
           </div>
           
-          <div>
-            <label class="block text-[10px] font-bold text-on-surface mb-0.5">URL de Imagen (Opcional)</label>
-            <input type="url" name="image" id="input-image" placeholder="https://..." class="w-full px-2.5 py-1.5 rounded border border-outline-variant focus:border-primary focus:ring-1 focus:ring-primary bg-surface outline-none transition-all text-xs" />
-          </div>
+          <ImageUploader 
+            name="image"
+            id="input-image"
+            label="Imagen de Categoría (Opcional)"
+            currentValue=""
+          />
         </div>
         
         <div class="mt-4 flex justify-end gap-2">
@@ -265,7 +295,62 @@ const allCategories = await db.select().from(categories).orderBy(categories.orde
     </div>
   </div>
 
-  <script is:inline>
+  <!-- Image Selector Modal -->
+  <div id="image-selector-modal" class="hidden fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-surface w-full max-w-3xl max-h-[80vh] rounded shadow-2xl overflow-hidden flex flex-col">
+      <div class="px-4 py-2.5 border-b border-outline-variant flex justify-between items-center bg-surface-container-low">
+        <h3 class="text-sm font-bold text-on-surface">Seleccionar Imagen</h3>
+        <button 
+          onclick="closeImageSelectorModal()"
+          class="w-6 h-6 rounded hover:bg-surface-container-highest flex items-center justify-center text-on-surface-variant transition-colors"
+        >
+          <span class="material-symbols-outlined text-base">close</span>
+        </button>
+      </div>
+      
+      <div class="flex-1 overflow-y-auto p-4">
+        <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2" id="image-grid">
+          {uniqueImages.map((imageUrl) => (
+            <button
+              type="button"
+              class="image-selector-item aspect-square rounded border-2 border-outline-variant hover:border-primary overflow-hidden bg-surface-container-low transition-all group relative"
+              data-image-url={imageUrl}
+            >
+              <img src={imageUrl} alt="Producto" class="w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <span class="material-symbols-outlined text-white text-2xl">check_circle</span>
+              </div>
+            </button>
+          ))}
+        </div>
+        
+        {uniqueImages.length === 0 && (
+          <div class="text-center py-8 text-on-surface-variant">
+            <span class="material-symbols-outlined text-4xl mb-2 block">photo_library</span>
+            <p class="text-sm">No hay imágenes disponibles</p>
+            <p class="text-xs mt-1">Sube productos primero para tener imágenes disponibles</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ uniqueImages }}>
+    let currentImageInputId = null;
+    
+    function openImageSelectorModal(inputId) {
+      currentImageInputId = inputId;
+      document.getElementById('image-selector-modal').classList.remove('hidden');
+    }
+    
+    function closeImageSelectorModal() {
+      currentImageInputId = null;
+      document.getElementById('image-selector-modal').classList.add('hidden');
+    }
+    
+    // Make openImageSelectorModal global so ImageUploader can access it
+    window.openImageSelectorModal = openImageSelectorModal;
+    
     function closeModal() {
       document.getElementById('modal-create').classList.add('hidden');
       // Reset form
@@ -295,11 +380,134 @@ const allCategories = await db.select().from(categories).orderBy(categories.orde
       document.getElementById('input-icon').value = categoryData.icon || 'category';
       document.getElementById('icon-preview').textContent = categoryData.icon || 'category';
       document.getElementById('input-order').value = categoryData.order || 0;
-      document.getElementById('input-image').value = categoryData.image || '';
+      
+      // Update image field
+      const imageInput = document.getElementById('input-image');
+      const imageUrl = categoryData.image || '';
+      if (imageInput) imageInput.value = imageUrl;
+      
+      // Update image preview
+      const previewImg = document.getElementById('input-image-preview-img');
+      const previewPlaceholder = document.getElementById('input-image-preview-placeholder');
+      const previewContainer = document.getElementById('input-image-preview-container');
+      
+      if (imageUrl) {
+        if (previewPlaceholder) previewPlaceholder.classList.add('hidden');
+        
+        if (!previewImg) {
+          const img = document.createElement('img');
+          img.id = 'input-image-preview-img';
+          img.src = imageUrl;
+          img.alt = 'Preview';
+          img.className = 'w-full h-full object-cover';
+          previewContainer?.appendChild(img);
+        } else {
+          previewImg.src = imageUrl;
+          previewImg.classList.remove('hidden');
+        }
+        
+        // Show remove button
+        let removeBtn = document.getElementById('input-image-remove-btn');
+        if (!removeBtn) {
+          removeBtn = document.createElement('button');
+          removeBtn.type = 'button';
+          removeBtn.id = 'input-image-remove-btn';
+          removeBtn.className = 'absolute top-1 right-1 w-6 h-6 rounded-full bg-error/90 text-on-error flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity';
+          removeBtn.title = 'Quitar imagen';
+          removeBtn.innerHTML = '<span class="material-symbols-outlined text-sm">close</span>';
+          removeBtn.addEventListener('click', function() {
+            if (imageInput) imageInput.value = '';
+            if (previewImg) previewImg.classList.add('hidden');
+            if (previewPlaceholder) {
+              previewPlaceholder.classList.remove('hidden');
+              previewPlaceholder.innerHTML = `
+                <span class="material-symbols-outlined text-4xl">image</span>
+                <span class="text-xs">Sin imagen</span>
+              `;
+            }
+            if (removeBtn) removeBtn.classList.add('hidden');
+          });
+          previewContainer?.appendChild(removeBtn);
+        } else {
+          removeBtn.classList.remove('hidden');
+        }
+      } else {
+        if (previewImg) previewImg.classList.add('hidden');
+        if (previewPlaceholder) {
+          previewPlaceholder.classList.remove('hidden');
+          previewPlaceholder.innerHTML = `
+            <span class="material-symbols-outlined text-4xl">image</span>
+            <span class="text-xs">Sin imagen</span>
+          `;
+        }
+        const removeBtn = document.getElementById('input-image-remove-btn');
+        if (removeBtn) removeBtn.classList.add('hidden');
+      }
     }
 
     // Event delegation for edit and delete buttons
     document.addEventListener('DOMContentLoaded', function() {
+      // Image selector items
+      document.querySelectorAll('.image-selector-item').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          const imageUrl = this.dataset.imageUrl;
+          if (currentImageInputId && imageUrl) {
+            // Update the hidden input
+            const hiddenInput = document.getElementById(currentImageInputId);
+            if (hiddenInput) {
+              hiddenInput.value = imageUrl;
+              
+              // Trigger preview update
+              const previewImg = document.getElementById(`${currentImageInputId}-preview-img`);
+              const previewPlaceholder = document.getElementById(`${currentImageInputId}-preview-placeholder`);
+              const previewContainer = document.getElementById(`${currentImageInputId}-preview-container`);
+              
+              if (previewPlaceholder) previewPlaceholder.classList.add('hidden');
+              
+              if (!previewImg) {
+                const img = document.createElement('img');
+                img.id = `${currentImageInputId}-preview-img`;
+                img.src = imageUrl;
+                img.alt = 'Preview';
+                img.className = 'w-full h-full object-cover';
+                previewContainer?.appendChild(img);
+              } else {
+                previewImg.src = imageUrl;
+                previewImg.classList.remove('hidden');
+              }
+              
+              // Show remove button
+              let removeBtn = document.getElementById(`${currentImageInputId}-remove-btn`);
+              if (!removeBtn) {
+                removeBtn = document.createElement('button');
+                removeBtn.type = 'button';
+                removeBtn.id = `${currentImageInputId}-remove-btn`;
+                removeBtn.className = 'absolute top-1 right-1 w-6 h-6 rounded-full bg-error/90 text-on-error flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity';
+                removeBtn.title = 'Quitar imagen';
+                removeBtn.innerHTML = '<span class="material-symbols-outlined text-sm">close</span>';
+                removeBtn.addEventListener('click', function() {
+                  if (hiddenInput) hiddenInput.value = '';
+                  if (previewImg) previewImg.classList.add('hidden');
+                  if (previewPlaceholder) {
+                    previewPlaceholder.classList.remove('hidden');
+                    previewPlaceholder.innerHTML = `
+                      <span class="material-symbols-outlined text-4xl">image</span>
+                      <span class="text-xs">Sin imagen</span>
+                    `;
+                  }
+                  if (removeBtn) removeBtn.classList.add('hidden');
+                });
+                previewContainer?.appendChild(removeBtn);
+              } else {
+                removeBtn.classList.remove('hidden');
+              }
+            }
+            
+            closeImageSelectorModal();
+          }
+        });
+      });
+      
       // Edit buttons
       document.querySelectorAll('.edit-category-btn').forEach(function(btn) {
         btn.addEventListener('click', function(e) {
