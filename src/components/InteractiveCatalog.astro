@@ -323,6 +323,10 @@ const { products, categories } = Astro.props;
   </div>
 
   <div class="p-2.5 border-t border-surface-container-high space-y-1.5">
+    <button id="cart-continue-shopping" class="w-full py-2 rounded bg-surface-container text-on-surface text-sm font-semibold hover:bg-surface-container-high transition-colors flex items-center justify-center gap-1.5">
+      <span class="material-symbols-outlined text-sm">arrow_back</span>
+      <span>Seguir Comprando</span>
+    </button>
     <button id="cart-clear" class="w-full py-2 rounded bg-surface-container text-on-surface text-sm font-semibold hover:bg-surface-container-high transition-colors">
       Vaciar carrito
     </button>
@@ -436,6 +440,10 @@ const { products, categories } = Astro.props;
     cartToggleBtn?.addEventListener('click', openCart);
     cartCloseBtn?.addEventListener('click', closeCart);
     cartOverlay?.addEventListener('click', closeCart);
+    
+    const cartContinueBtn = document.getElementById('cart-continue-shopping') as HTMLButtonElement;
+    cartContinueBtn?.addEventListener('click', closeCart);
+    
     cartClearBtn?.addEventListener('click', () => {
       cart.clear();
       renderCart();
