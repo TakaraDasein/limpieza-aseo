@@ -31,7 +31,7 @@ export const products = sqliteTable('products', {
   name: text('name').notNull(),
   description: text('description'),
   categoryId: text('category_id').references(() => categories.id),
-  price: integer('price').notNull(), // Price in COP
+  price: integer('price'), // Price in COP
   image: text('image'), // Cloudinary URL (Main image, kept for backwards compatibility)
   images: text('images', { mode: 'json' }), // JSON array of additional image URLs
   variants: text('variants'), // JSON array stored as text

@@ -54,9 +54,9 @@ export const POST: APIRoute = async ({ request }) => {
     const body = await request.json();
     
     // Validate required fields
-    if (!body.sku || !body.name || !body.price) {
+    if (!body.sku || !body.name) {
       return new Response(
-        JSON.stringify({ error: 'SKU, name, and price are required' }),
+        JSON.stringify({ error: 'SKU and name are required' }),
         {
           status: 400,
           headers: {
@@ -75,7 +75,7 @@ export const POST: APIRoute = async ({ request }) => {
       name: body.name,
       description: body.description || null,
       categoryId: body.categoryId || null,
-      price: parseInt(body.price),
+      price: body.price === null || body.price === undefined || body.price === '' ? null : parseInt(body.price, 10),
       image: body.image || null,
       images: imagesJson,
       variants: variantsJson,

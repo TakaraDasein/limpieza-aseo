@@ -80,10 +80,10 @@ const { products, categories } = Astro.props;
                     </div>
                   )}
                   
-                  {product.price && (
-                    <div class="mb-3">
-                      <p class="text-lg font-bold text-primary">
-                        ${(product.price / 1000).toFixed(3).replace('.', ',')} COP
+                   {product.price != null && (
+                     <div class="mb-3">
+                       <p class="text-lg font-bold text-primary">
+                         ${(product.price / 1000).toFixed(3).replace('.', ',')} COP
                       </p>
                     </div>
                   )}
@@ -194,7 +194,8 @@ const { products, categories } = Astro.props;
         const quantity = input ? parseInt(input.value) || 1 : 1;
         
         // Format price
-        const priceFormatted = productPrice ? `$${(parseInt(productPrice) / 1000).toFixed(3).replace('.', ',')} COP` : 'Consultar';
+        const hasPrice = productPrice !== null && productPrice !== '';
+        const priceFormatted = hasPrice ? `$${(parseInt(productPrice, 10) / 1000).toFixed(3).replace('.', ',')} COP` : 'Consultar';
         
         // Build WhatsApp message
         let message = `¡Hola! Me interesa: ${productName}`;
@@ -205,7 +206,7 @@ const { products, categories } = Astro.props;
         
         message += ` - Cantidad: ${quantity} unidad${quantity > 1 ? 'es' : ''}`;
         
-        if (productPrice) {
+        if (hasPrice) {
           message += ` - Precio unitario: ${priceFormatted}`;
         }
         

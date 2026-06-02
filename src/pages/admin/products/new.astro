@@ -99,7 +99,7 @@ const allCategories = await db.select().from(categories).orderBy(categories.name
         <!-- Price -->
         <div>
           <label for="price" class="block text-sm font-semibold text-on-surface mb-2">
-            Precio (COP) <span class="text-error">*</span>
+            Precio (COP)
           </label>
           <div class="relative">
             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant font-semibold">
@@ -109,14 +109,13 @@ const allCategories = await db.select().from(categories).orderBy(categories.name
               type="number"
               id="price"
               name="price"
-              required
               min="0"
               step="100"
               placeholder="18000"
               class="w-full pl-8 pr-4 py-3 bg-surface-container rounded border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
             />
           </div>
-          <p class="mt-1 text-sm text-on-surface-variant">Precio en pesos colombianos</p>
+          <p class="mt-1 text-sm text-on-surface-variant">Opcional. Si lo dejas vacio, el producto se mostrara sin precio.</p>
         </div>
 
         <!-- Image Upload -->
@@ -464,12 +463,14 @@ const allCategories = await db.select().from(categories).orderBy(categories.name
       const mainImage = imageUrls.length > 0 ? imageUrls[0] : null;
       const additionalImages = imageUrls.length > 1 ? imageUrls.slice(1) : [];
 
+      const priceValue = (formData.get('price') as string)?.trim();
+
       const data: any = {
         sku: formData.get('sku'),
         name: formData.get('name'),
         description: formData.get('description') || null,
         categoryId: formData.get('categoryId') || null,
-        price: parseInt(formData.get('price') as string),
+        price: priceValue ? parseInt(priceValue, 10) : null,
         image: mainImage,
         images: additionalImages,
         order: parseInt(formData.get('order') as string) || 0,

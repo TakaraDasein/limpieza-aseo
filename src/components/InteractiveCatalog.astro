@@ -279,7 +279,7 @@ const { products, categories } = Astro.props;
                         data-product-sku={product.sku}
                         data-product-price={product.price}
                       >
-                        <span class="text-[9px] sm:text-[10px]">{product.price ? `$${(product.price / 1000).toFixed(3).replace('.', ',')}` : 'Consultar'}</span>
+                        <span class="text-[9px] sm:text-[10px]">{product.price != null ? `$${(product.price / 1000).toFixed(3).replace('.', ',')}` : 'Consultar'}</span>
                         <span class="material-symbols-outlined text-xs">arrow_forward</span>
                       </button>
                     </div>
@@ -360,10 +360,10 @@ const { products, categories } = Astro.props;
 
     let currentSearchTerm = '';
     let currentCategory = '';
-    let allProducts: Array<{name: string, description: string, category: string, image: string, price: number}> = [];
-    const cart = new Map<string, { id: string; name: string; sku: string; price: number; quantity: number; image: string }>();
+    let allProducts: Array<{name: string, description: string, category: string, image: string, price: number | null}> = [];
+    const cart = new Map<string, { id: string; name: string; sku: string; price: number | null; quantity: number; image: string }>();
 
-    const formatPrice = (value: number) => `$${(value / 1000).toFixed(3).replace('.', ',')} COP`;
+    const formatPrice = (value: number | null) => value == null ? 'Consultar' : `$${(value / 1000).toFixed(3).replace('.', ',')} COP`;
 
     function openCart() {
       cartDrawer.classList.remove('translate-x-full');
@@ -414,7 +414,7 @@ const { products, categories } = Astro.props;
             </button>
           </div>
           <div class="flex items-center justify-between">
-            <p class="font-bold text-primary">${formatPrice(item.price || 0)}</p>
+            <p class="font-bold text-primary">${formatPrice(item.price)}</p>
             <div class="flex items-center gap-2">
               <button class="cart-qty-minus w-7 h-7 rounded-md bg-surface-container text-sm" data-product-id="${item.id}">-</button>
               <span class="min-w-5 text-center font-semibold text-sm">${item.quantity}</span>
@@ -427,7 +427,7 @@ const { products, categories } = Astro.props;
       updateCartBadge();
     }
 
-    function addToCart(productId: string, name: string, sku: string, price: number, quantity: number, image: string) {
+    function addToCart(productId: string, name: string, sku: string, price: number | null, quantity: number, image: string) {
       const existing = cart.get(productId);
       if (existing) {
         existing.quantity += quantity;
@@ -492,7 +492,8 @@ const { products, categories } = Astro.props;
       section.querySelectorAll('.product-card').forEach(card => {
         const name = card.getAttribute('data-product-name') || '';
         const description = card.getAttribute('data-product-description') || '';
-        const price = parseInt(card.getAttribute('data-product-price') || '0');
+        const rawPrice = card.getAttribute('data-product-price');
+        const price = rawPrice ? parseInt(rawPrice, 10) : null;
         const imgEl = card.querySelector('.product-main-image') as HTMLImageElement;
         const image = imgEl?.src || '';
         if (name) {
@@ -528,7 +529,7 @@ const { products, categories } = Astro.props;
               <div class="text-xs text-on-surface-variant truncate">${product.description.slice(0, 40)}...</div>
             </div>
             <div class="text-sm font-bold text-primary whitespace-nowrap">
-              ${product.price ? `$${(product.price / 1000).toFixed(3).replace('.', ',')}` : 'Consultar'}
+              ${product.price != null ? `$${(product.price / 1000).toFixed(3).replace('.', ',')}` : 'Consultar'}
             </div>
           </div>
         </div>
@@ -739,7 +740,8 @@ const { products, categories } = Astro.props;
         const quantity = 1;
         
         // Format price
-        const priceFormatted = productPrice ? `$${(parseInt(productPrice) / 1000).toFixed(3).replace('.', ',')} COP` : 'Consultar';
+        const hasPrice = productPrice !== null && productPrice !== '';
+        const priceFormatted = hasPrice ? `$${(parseInt(productPrice, 10) / 1000).toFixed(3).replace('.', ',')} COP` : 'Consultar';
         
         // Build WhatsApp message
         let message = `¡Hola! Me interesa: ${productName}`;
@@ -750,7 +752,7 @@ const { products, categories } = Astro.props;
         
         message += ` - Cantidad: ${quantity} unidad${quantity > 1 ? 'es' : ''}`;
         
-        if (productPrice) {
+        if (hasPrice) {
           message += ` - Precio unitario: ${priceFormatted}`;
         }
         
@@ -765,7 +767,8 @@ const { products, categories } = Astro.props;
         const productId = btn.getAttribute('data-product-id') || '';
         const productName = btn.getAttribute('data-product-name') || 'Producto';
         const productSku = btn.getAttribute('data-product-sku') || '';
-        const productPrice = parseInt(btn.getAttribute('data-product-price') || '0');
+        const rawPrice = btn.getAttribute('data-product-price');
+        const productPrice = rawPrice ? parseInt(rawPrice, 10) : null;
         const productImage = btn.getAttribute('data-product-image') || '';
 
         addToCart(productId, productName, productSku, productPrice, 1, productImage);

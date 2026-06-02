@@ -80,7 +80,9 @@ export const PUT: APIRoute = async ({ params, request }) => {
     if (body.name !== undefined) updateData.name = body.name;
     if (body.description !== undefined) updateData.description = body.description || null;
     if (body.categoryId !== undefined) updateData.categoryId = body.categoryId || null;
-    if (body.price !== undefined) updateData.price = parseInt(body.price);
+    if (body.price !== undefined) {
+      updateData.price = body.price === null || body.price === '' ? null : parseInt(body.price, 10);
+    }
     if (body.image !== undefined) updateData.image = body.image || null;
     if (body.images !== undefined) updateData.images = body.images ? JSON.stringify(body.images) : null;
     if (body.variants !== undefined) updateData.variants = body.variants ? JSON.stringify(body.variants) : null;

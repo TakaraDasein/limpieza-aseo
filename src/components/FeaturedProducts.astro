@@ -8,12 +8,14 @@ interface Props {
 
 const { products = [], categories = [] } = Astro.props;
 
-const formatPrice = (price: number) => {
+const formatPrice = (price?: number | null) => {
+  if (price == null) return null;
+
   return new Intl.NumberFormat('es-CO', {
     style: 'currency',
     currency: 'COP',
     minimumFractionDigits: 0,
-  }).format(price || 0);
+  }).format(price);
 };
 
 const parseJsonMaybe = (value: unknown, fallback: any) => {
@@ -203,10 +205,12 @@ const isEmpty = sections.length === 0;
                   </div>
 
                   <div class="flex flex-col items-start justify-between border-t border-surface-container-high pt-4 sm:pt-5 gap-3 sm:gap-4">
-                    <div class="flex flex-col">
-                      <span class="text-on-surface-variant text-xs font-semibold mb-1">Desde</span>
-                      <span class="text-2xl sm:text-3xl font-extrabold text-primary">{formatPrice(section.cat1Products[0].price)}</span>
-                    </div>
+                    {section.cat1Products[0].price != null && (
+                      <div class="flex flex-col">
+                        <span class="text-on-surface-variant text-xs font-semibold mb-1">Desde</span>
+                        <span class="text-2xl sm:text-3xl font-extrabold text-primary">{formatPrice(section.cat1Products[0].price)}</span>
+                      </div>
+                    )}
 
                     <div class="w-full flex flex-col xs:flex-row items-stretch xs:items-center gap-2">
                       {section.cat2 && section.cat2Products.length > 0 && (
@@ -267,10 +271,12 @@ const isEmpty = sections.length === 0;
                   </div>
 
                   <div class="flex flex-col items-start justify-between border-t border-surface-container-high pt-4 sm:pt-5 gap-3 sm:gap-4">
-                    <div class="flex flex-col">
-                      <span class="text-on-surface-variant text-xs font-semibold mb-1">Desde</span>
-                      <span class="text-2xl sm:text-3xl font-extrabold text-primary">{formatPrice(section.cat2Products[0].price)}</span>
-                    </div>
+                    {section.cat2Products[0].price != null && (
+                      <div class="flex flex-col">
+                        <span class="text-on-surface-variant text-xs font-semibold mb-1">Desde</span>
+                        <span class="text-2xl sm:text-3xl font-extrabold text-primary">{formatPrice(section.cat2Products[0].price)}</span>
+                      </div>
+                    )}
 
                     <div class="w-full flex flex-col xs:flex-row items-stretch xs:items-center gap-2">
                       {section.cat2 && section.cat2Products.length > 0 && (
