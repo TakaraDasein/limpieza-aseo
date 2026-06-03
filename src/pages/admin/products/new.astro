@@ -1,10 +1,11 @@
 ---
 import AdminLayout from '../../../layouts/AdminLayout.astro';
 import { db } from '../../../db';
-import { categories } from '../../../db/schema';
+import { categories, products } from '../../../db/schema';
 
 // Fetch all categories for dropdown
 const allCategories = await db.select().from(categories).orderBy(categories.name).all();
+const existingSkus = (await db.select({ sku: products.sku }).from(products).all()).map((product) => product.sku);
 ---
 
 <AdminLayout title="Nuevo Producto | Admin Panel">
@@ -47,7 +48,7 @@ const allCategories = await db.select().from(categories).orderBy(categories.name
             placeholder="Ej: ESC-001"
             class="w-full px-4 py-3 bg-surface-container rounded border border-outline-variant focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all"
           />
-          <p class="mt-1 text-sm text-on-surface-variant">Código único del producto</p>
+          <p class="mt-1 text-sm text-on-surface-variant">Se genera automaticamente desde el nombre y puedes ajustarlo si quieres.</p>
         </div>
 
         <!-- Name -->
@@ -253,10 +254,59 @@ const allCategories = await db.select().from(categories).orderBy(categories.name
     </form>
   </div>
 
-  <script>
+  <script define:vars={{ existingSkus }}>
     const form = document.getElementById('product-form') as HTMLFormElement;
     const errorMessage = document.getElementById('error-message');
     const errorText = document.getElementById('error-text');
+    const skuInput = document.getElementById('sku') as HTMLInputElement;
+    const nameInput = document.getElementById('name') as HTMLInputElement;
+    let skuTouched = false;
+
+    const normalizeSkuBase = (value: string) => {
+      const normalized = value
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase()
+        .replace(/[^A-Z0-9 ]/g, ' ')
+        .trim();
+
+      if (!normalized) return 'PRD';
+
+      const words = normalized.split(/\s+/).filter(Boolean);
+      const initials = words.slice(0, 3).map((word) => word[0]).join('');
+      const compact = normalized.replace(/\s+/g, '');
+
+      return (initials || compact.slice(0, 3) || 'PRD').padEnd(3, 'X').slice(0, 3);
+    };
+
+    const suggestSku = (productName: string) => {
+      const base = normalizeSkuBase(productName);
+      const usedNumbers = new Set(
+        existingSkus
+          .filter((sku: string) => sku.startsWith(`${base}-`))
+          .map((sku: string) => Number.parseInt(sku.split('-')[1] || '0', 10))
+          .filter((value: number) => !Number.isNaN(value) && value > 0)
+      );
+
+      let nextNumber = 1;
+      while (usedNumbers.has(nextNumber)) {
+        nextNumber += 1;
+      }
+
+      return `${base}-${String(nextNumber).padStart(3, '0')}`;
+    };
+
+    const updateSuggestedSku = () => {
+      if (skuTouched) return;
+      skuInput.value = suggestSku(nameInput.value);
+    };
+
+    skuInput.addEventListener('input', () => {
+      skuTouched = skuInput.value.trim().length > 0;
+    });
+
+    nameInput.addEventListener('input', updateSuggestedSku);
+    updateSuggestedSku();
     
     // Image upload elements
     const dropZone = document.getElementById('drop-zone') as HTMLDivElement;
