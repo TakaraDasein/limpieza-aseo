@@ -6,6 +6,20 @@ interface Props {
 
 const { products, categories } = Astro.props;
 
+const getProductName = (product: any) =>
+	typeof product?.name === 'string' && product.name.trim() ? product.name : 'Producto';
+
+const getProductDescription = (product: any) =>
+	typeof product?.description === 'string' ? product.description : '';
+
+const getProductImage = (product: any) =>
+	typeof product?.image === 'string' && product.image.trim()
+		? product.image
+		: 'https://via.placeholder.com/600x600?text=Producto';
+
+const getProductImages = (product: any) =>
+	Array.isArray(product?.images) ? product.images.filter((image: unknown) => typeof image === 'string' && image.trim()) : [];
+
 ---
 
 <!-- Hero Section with Title, Filters, and Categories -->
@@ -189,16 +203,16 @@ const { products, categories } = Astro.props;
               <div 
                 class="product-card h-full bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 group flex flex-col"
                 style={`animation-delay: ${prodIndex * 50}ms;`}
-                data-product-name={product.name.toLowerCase()}
-                data-product-description={product.description.toLowerCase()}
+                data-product-name={getProductName(product).toLowerCase()}
+                data-product-description={getProductDescription(product).toLowerCase()}
                 data-product-price={product.price}
-                data-product-images={JSON.stringify(product.images || [])}
+                data-product-images={JSON.stringify(getProductImages(product))}
               >
                 <div class="aspect-square overflow-hidden bg-surface-container-highest relative product-image-container">
                   {/* Main image */}
-                  <img 
-                    src={product.image} 
-                    alt={product.name}
+                  <img
+                    src={getProductImage(product)}
+                    alt={getProductName(product)}
                     class="product-main-image w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     loading="lazy"
                     data-index="0"
@@ -206,7 +220,7 @@ const { products, categories } = Astro.props;
                   <div class="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
                   
                   {/* Image navigation arrows - only show if product has multiple images */}
-                  {product.images && product.images.length > 0 && (
+                  {getProductImages(product).length > 0 && (
                     <>
                       <button 
                         class="product-img-prev absolute left-1 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white/90 shadow flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white z-10"
@@ -224,7 +238,7 @@ const { products, categories } = Astro.props;
                       {/* Dot indicators */}
                       <div class="absolute bottom-1.5 left-1/2 -translate-x-1/2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
                         <span class="product-img-dot w-1.5 h-1.5 rounded-full bg-white shadow-sm cursor-pointer transition-all active" data-index="0"></span>
-                        {product.images.map((_, imgIndex) => (
+                        {getProductImages(product).map((_, imgIndex) => (
                           <span class="product-img-dot w-1.5 h-1.5 rounded-full bg-white/60 shadow-sm cursor-pointer transition-all hover:bg-white/80" data-index={imgIndex + 1}></span>
                         ))}
                       </div>
@@ -234,10 +248,10 @@ const { products, categories } = Astro.props;
                 
                 <div class="p-2.5 md:p-3 flex flex-col flex-1">
                   <h4 class="font-headline font-bold text-xs md:text-sm text-primary mb-1 line-clamp-2 group-hover:text-secondary transition-colors">
-                    {product.name}
+                    {getProductName(product)}
                   </h4>
                   <p class="text-[10px] md:text-xs text-on-surface-variant mb-2 line-clamp-2">
-                    {product.description}
+                    {getProductDescription(product)}
                   </p>
                   
                   {product.variants && product.variants.length > 0 ? (
@@ -263,10 +277,10 @@ const { products, categories } = Astro.props;
                       <button 
                         class="add-to-cart-btn w-full h-7 bg-surface-container-high text-primary rounded text-[10px] font-semibold hover:bg-surface-container-highest transition-all flex items-center justify-center gap-1"
                         data-product-id={product.id}
-                        data-product-name={product.name}
+                        data-product-name={getProductName(product)}
                         data-product-sku={product.sku}
                         data-product-price={product.price}
-                        data-product-image={product.image}
+                        data-product-image={getProductImage(product)}
                       >
                         <span class="material-symbols-outlined text-xs">add_shopping_cart</span>
                         <span class="hidden sm:inline">Agregar</span>
@@ -275,7 +289,7 @@ const { products, categories } = Astro.props;
                       <button 
                         class="whatsapp-btn w-full h-7 bg-primary text-on-primary rounded text-[10px] font-semibold hover:bg-primary-container hover:scale-95 transition-all flex items-center justify-center gap-1 group-hover:shadow"
                         data-product-id={product.id}
-                        data-product-name={product.name}
+                        data-product-name={getProductName(product)}
                         data-product-sku={product.sku}
                         data-product-price={product.price}
                       >
@@ -526,7 +540,7 @@ const { products, categories } = Astro.props;
             <img src="${product.image}" alt="${product.name}" class="w-10 h-10 rounded object-cover bg-surface-container" />
             <div class="flex-1 min-w-0">
               <div class="font-semibold text-on-surface text-sm truncate">${product.name.charAt(0).toUpperCase() + product.name.slice(1)}</div>
-              <div class="text-xs text-on-surface-variant truncate">${product.description.slice(0, 40)}...</div>
+              <div class="text-xs text-on-surface-variant truncate">${(product.description || '').slice(0, 40)}${product.description ? '...' : ''}</div>
             </div>
             <div class="text-sm font-bold text-primary whitespace-nowrap">
               ${product.price && product.price > 0 ? `$${(product.price / 1000).toFixed(3).replace('.', ',')}` : 'Consultar'}
