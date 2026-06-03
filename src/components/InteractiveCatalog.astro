@@ -222,13 +222,13 @@ const getProductImages = (product: any) =>
                   {/* Image navigation arrows - only show if product has multiple images */}
                   {getProductImages(product).length > 0 && (
                     <>
-                      <button 
+                      <button
                         class="product-img-prev absolute left-1 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white/90 shadow flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white z-10"
                         aria-label="Imagen anterior"
                       >
                         <span class="material-symbols-outlined text-primary text-sm">chevron_left</span>
                       </button>
-                      <button 
+                      <button
                         class="product-img-next absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-white/90 shadow flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white z-10"
                         aria-label="Siguiente imagen"
                       >
@@ -246,16 +246,16 @@ const getProductImages = (product: any) =>
                   )}
                 </div>
                 
-                <div class="p-2.5 md:p-3 flex flex-col flex-1">
-                  <h4 class="font-headline font-bold text-xs md:text-sm text-primary mb-1 line-clamp-2 group-hover:text-secondary transition-colors">
+                <div class="p-3 md:p-3.5 flex flex-col flex-1 gap-1.5">
+                  <h4 class="font-headline font-extrabold text-sm md:text-base text-primary line-clamp-2 leading-tight group-hover:text-secondary transition-colors min-h-[2.25rem] md:min-h-[2.5rem]">
                     {getProductName(product)}
                   </h4>
-                  <p class="text-[10px] md:text-xs text-on-surface-variant mb-2 line-clamp-2">
+                  <p class="text-xs md:text-sm text-on-surface-variant line-clamp-2 min-h-[2.5rem] md:min-h-[2.75rem] leading-snug">
                     {getProductDescription(product)}
                   </p>
-                  
+
                   {product.variants && product.variants.length > 0 ? (
-                    <div class="mb-2">
+                    <div class="pt-0.5">
                       <p class="text-[9px] font-semibold text-secondary mb-1">Variantes:</p>
                       <div class="flex flex-wrap gap-1">
                         {product.variants.slice(0, 3).map(variant => (
@@ -271,6 +271,33 @@ const getProductImages = (product: any) =>
                       </div>
                     </div>
                   ) : null}
+
+                  <div class="mt-auto pt-1">
+                    <div class="product-actions grid grid-cols-2 gap-1.5">
+                      <button
+                        class="add-to-cart-btn w-full h-7 bg-surface-container-high text-primary rounded text-[10px] font-semibold hover:bg-surface-container-highest transition-all flex items-center justify-center gap-1"
+                        data-product-id={product.id}
+                        data-product-name={getProductName(product)}
+                        data-product-sku={product.sku}
+                        data-product-price={product.price}
+                        data-product-image={getProductImage(product)}
+                      >
+                        <span class="material-symbols-outlined text-xs">add_shopping_cart</span>
+                        <span class="hidden sm:inline">Agregar</span>
+                      </button>
+
+                      <button
+                        class="whatsapp-btn w-full h-7 bg-primary text-on-primary rounded text-[10px] font-semibold hover:bg-primary-container hover:scale-95 transition-all flex items-center justify-center gap-1 group-hover:shadow"
+                        data-product-id={product.id}
+                        data-product-name={getProductName(product)}
+                        data-product-sku={product.sku}
+                        data-product-price={product.price}
+                      >
+                        <span class="text-[9px] sm:text-[10px]">{product.price > 0 ? `$${(product.price / 1000).toFixed(3).replace('.', ',')}` : 'Consultar'}</span>
+                        <span class="material-symbols-outlined text-xs">arrow_forward</span>
+                      </button>
+                    </div>
+                  </div>
 
                 </div>
               </div>
