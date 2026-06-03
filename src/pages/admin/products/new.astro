@@ -492,7 +492,7 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
         uploadPrompt.classList.remove('hidden');
       } catch (error) {
         console.error('Upload error:', error);
-        uploadErrorText.textContent = error instanceof Error ? error.message : 'Error al subir la imagen';
+        uploadErrorText.textContent = error?.message || 'Error al subir la imagen';
         uploadError.classList.remove('hidden');
         uploadLoading.classList.add('hidden');
         uploadLoading.classList.remove('flex');
@@ -523,7 +523,7 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
         price: priceValue ? parseInt(priceValue, 10) : null,
         image: mainImage,
         images: additionalImages,
-        order: parseInt(formData.get('order') as string) || 0,
+        order: parseInt(String(formData.get('order') || '0'), 10) || 0,
         active: formData.get('active') === 'on',
       };
 
