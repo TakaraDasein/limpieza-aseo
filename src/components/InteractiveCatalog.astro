@@ -208,7 +208,7 @@ const getProductImages = (product: any) =>
                 data-product-price={product.price}
                 data-product-images={JSON.stringify(getProductImages(product))}
               >
-                <div class="aspect-square overflow-hidden bg-surface-container-highest relative product-image-container">
+                <div class="aspect-[5/4] sm:aspect-square overflow-hidden bg-surface-container-highest relative product-image-container">
                   {/* Main image */}
                   <img
                     src={getProductImage(product)}
@@ -246,11 +246,11 @@ const getProductImages = (product: any) =>
                   )}
                 </div>
                 
-                <div class="p-3 md:p-3.5 flex flex-col flex-1 gap-1.5">
-                  <h4 class="font-headline font-extrabold text-sm md:text-base text-primary line-clamp-2 leading-tight group-hover:text-secondary transition-colors min-h-[2.25rem] md:min-h-[2.5rem]">
+                <div class="p-3 sm:p-3.5 flex flex-col flex-1 gap-1.5">
+                  <h4 class="font-headline font-extrabold text-[13px] sm:text-sm md:text-base text-primary line-clamp-2 leading-tight group-hover:text-secondary transition-colors min-h-[2rem] sm:min-h-[2.25rem] md:min-h-[2.5rem]">
                     {getProductName(product)}
                   </h4>
-                  <p class="text-xs md:text-sm text-on-surface-variant line-clamp-2 min-h-[2.5rem] md:min-h-[2.75rem] leading-snug">
+                  <p class="text-xs md:text-sm text-on-surface-variant line-clamp-3 sm:line-clamp-2 min-h-[3.3rem] sm:min-h-[2.5rem] md:min-h-[2.75rem] leading-snug">
                     {getProductDescription(product)}
                   </p>
 
