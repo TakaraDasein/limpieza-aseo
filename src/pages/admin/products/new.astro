@@ -255,14 +255,14 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
   </div>
 
   <script define:vars={{ existingSkus }}>
-    const form = document.getElementById('product-form') as HTMLFormElement;
+    const form = document.getElementById('product-form');
     const errorMessage = document.getElementById('error-message');
     const errorText = document.getElementById('error-text');
-    const skuInput = document.getElementById('sku') as HTMLInputElement;
-    const nameInput = document.getElementById('name') as HTMLInputElement;
+    const skuInput = document.getElementById('sku');
+    const nameInput = document.getElementById('name');
     let skuTouched = false;
 
-    const normalizeSkuBase = (value: string) => {
+    const normalizeSkuBase = (value) => {
       const normalized = value
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '')
@@ -279,13 +279,13 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
       return (initials || compact.slice(0, 3) || 'PRD').padEnd(3, 'X').slice(0, 3);
     };
 
-    const suggestSku = (productName: string) => {
+    const suggestSku = (productName) => {
       const base = normalizeSkuBase(productName);
       const usedNumbers = new Set(
         existingSkus
-          .filter((sku: string) => sku.startsWith(`${base}-`))
-          .map((sku: string) => Number.parseInt(sku.split('-')[1] || '0', 10))
-          .filter((value: number) => !Number.isNaN(value) && value > 0)
+          .filter((sku) => sku.startsWith(`${base}-`))
+          .map((sku) => Number.parseInt(sku.split('-')[1] || '0', 10))
+          .filter((value) => !Number.isNaN(value) && value > 0)
       );
 
       let nextNumber = 1;
@@ -309,16 +309,16 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
     updateSuggestedSku();
     
     // Image upload elements
-    const dropZone = document.getElementById('drop-zone') as HTMLDivElement;
-    const fileInput = document.getElementById('file-input') as HTMLInputElement;
-    const imagesContainer = document.getElementById('images-container') as HTMLDivElement;
-    const uploadPrompt = document.getElementById('upload-prompt') as HTMLDivElement;
-    const uploadLoading = document.getElementById('upload-loading') as HTMLDivElement;
-    const uploadError = document.getElementById('upload-error') as HTMLDivElement;
-    const uploadErrorText = document.getElementById('upload-error-text') as HTMLParagraphElement;
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('file-input');
+    const imagesContainer = document.getElementById('images-container');
+    const uploadPrompt = document.getElementById('upload-prompt');
+    const uploadLoading = document.getElementById('upload-loading');
+    const uploadError = document.getElementById('upload-error');
+    const uploadErrorText = document.getElementById('upload-error-text');
 
     // Store all image URLs
-    let imageUrls: string[] = [];
+    let imageUrls = [];
     const MAX_IMAGES = 5;
 
     // Render images grid
@@ -343,7 +343,7 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
 
       // Add event listeners to buttons
       imagesContainer.querySelectorAll('.image-item').forEach((item) => {
-        const index = parseInt((item as HTMLElement).dataset.index || '0');
+        const index = parseInt(item.dataset.index || '0', 10);
         
         item.querySelector('.move-left-btn')?.addEventListener('click', (e) => {
           e.stopPropagation();
@@ -387,7 +387,7 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
       document.body.addEventListener(eventName, preventDefaults, false);
     });
 
-    function preventDefaults(e: Event) {
+    function preventDefaults(e) {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -407,7 +407,7 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
 
     // Handle dropped files
     dropZone.addEventListener('drop', (e) => {
-      const dt = (e as DragEvent).dataTransfer;
+      const dt = e.dataTransfer;
       const files = dt?.files;
       if (files && files.length > 0) {
         handleFiles(Array.from(files));
@@ -416,14 +416,14 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
 
     // Handle selected files
     fileInput.addEventListener('change', (e) => {
-      const files = (e.target as HTMLInputElement).files;
+      const files = e.target?.files;
       if (files && files.length > 0) {
         handleFiles(Array.from(files));
       }
       fileInput.value = ''; // Reset input
     });
 
-    async function handleFiles(files: File[]) {
+    async function handleFiles(files) {
       // Hide error
       uploadError.classList.add('hidden');
 
@@ -442,7 +442,7 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
       }
     }
 
-    async function handleFile(file: File) {
+    async function handleFile(file) {
       // Validate file type
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
       if (!allowedTypes.includes(file.type)) {
@@ -490,9 +490,9 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
         uploadLoading.classList.add('hidden');
         uploadLoading.classList.remove('flex');
         uploadPrompt.classList.remove('hidden');
-      } catch (error: any) {
+      } catch (error) {
         console.error('Upload error:', error);
-        uploadErrorText.textContent = error.message || 'Error al subir la imagen';
+        uploadErrorText.textContent = error instanceof Error ? error.message : 'Error al subir la imagen';
         uploadError.classList.remove('hidden');
         uploadLoading.classList.add('hidden');
         uploadLoading.classList.remove('flex');
@@ -513,9 +513,9 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
       const mainImage = imageUrls.length > 0 ? imageUrls[0] : null;
       const additionalImages = imageUrls.length > 1 ? imageUrls.slice(1) : [];
 
-      const priceValue = (formData.get('price') as string)?.trim();
+      const priceValue = String(formData.get('price') || '').trim();
 
-      const data: any = {
+      const data = {
         sku: formData.get('sku'),
         name: formData.get('name'),
         description: formData.get('description') || null,
@@ -528,12 +528,12 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
       };
 
       // Parse variants
-      const variantsValue = formData.get('variants') as string;
+      const variantsValue = String(formData.get('variants') || '');
       if (variantsValue && variantsValue.trim()) {
         try {
           data.variants = JSON.parse(variantsValue);
         } catch (error) {
-          errorText!.textContent = 'El formato de variantes no es un JSON válido';
+          errorText.textContent = 'El formato de variantes no es un JSON válido';
           errorMessage?.classList.remove('hidden');
           return;
         }
@@ -552,12 +552,12 @@ const existingSkus = (await db.select({ sku: products.sku }).from(products).all(
           window.location.href = '/admin/products';
         } else {
           const error = await response.json();
-          errorText!.textContent = error.error || 'Error al crear el producto';
+          errorText.textContent = error.error || 'Error al crear el producto';
           errorMessage?.classList.remove('hidden');
         }
       } catch (error) {
         console.error('Error:', error);
-        errorText!.textContent = 'Error de conexión al crear el producto';
+        errorText.textContent = 'Error de conexión al crear el producto';
         errorMessage?.classList.remove('hidden');
       }
     });
