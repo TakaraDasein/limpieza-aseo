@@ -279,7 +279,7 @@ const { products, categories } = Astro.props;
                         data-product-sku={product.sku}
                         data-product-price={product.price}
                       >
-                        <span class="text-[9px] sm:text-[10px]">{product.price != null ? `$${(product.price / 1000).toFixed(3).replace('.', ',')}` : 'Consultar'}</span>
+                        <span class="text-[9px] sm:text-[10px]">{product.price > 0 ? `$${(product.price / 1000).toFixed(3).replace('.', ',')}` : 'Consultar'}</span>
                         <span class="material-symbols-outlined text-xs">arrow_forward</span>
                       </button>
                     </div>
@@ -363,7 +363,7 @@ const { products, categories } = Astro.props;
     let allProducts: Array<{name: string, description: string, category: string, image: string, price: number | null}> = [];
     const cart = new Map<string, { id: string; name: string; sku: string; price: number | null; quantity: number; image: string }>();
 
-    const formatPrice = (value: number | null) => value == null ? 'Consultar' : `$${(value / 1000).toFixed(3).replace('.', ',')} COP`;
+    const formatPrice = (value: number | null) => value && value > 0 ? `$${(value / 1000).toFixed(3).replace('.', ',')} COP` : 'Consultar';
 
     function openCart() {
       cartDrawer.classList.remove('translate-x-full');
@@ -529,7 +529,7 @@ const { products, categories } = Astro.props;
               <div class="text-xs text-on-surface-variant truncate">${product.description.slice(0, 40)}...</div>
             </div>
             <div class="text-sm font-bold text-primary whitespace-nowrap">
-              ${product.price != null ? `$${(product.price / 1000).toFixed(3).replace('.', ',')}` : 'Consultar'}
+              ${product.price && product.price > 0 ? `$${(product.price / 1000).toFixed(3).replace('.', ',')}` : 'Consultar'}
             </div>
           </div>
         </div>
@@ -740,7 +740,7 @@ const { products, categories } = Astro.props;
         const quantity = 1;
         
         // Format price
-        const hasPrice = productPrice !== null && productPrice !== '';
+        const hasPrice = productPrice !== null && productPrice !== '' && parseInt(productPrice, 10) > 0;
         const priceFormatted = hasPrice ? `$${(parseInt(productPrice, 10) / 1000).toFixed(3).replace('.', ',')} COP` : 'Consultar';
         
         // Build WhatsApp message

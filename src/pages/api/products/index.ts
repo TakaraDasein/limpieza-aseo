@@ -75,7 +75,7 @@ export const POST: APIRoute = async ({ request }) => {
       name: body.name,
       description: body.description || null,
       categoryId: body.categoryId || null,
-      price: body.price === null || body.price === undefined || body.price === '' ? null : parseInt(body.price, 10),
+      price: body.price === null || body.price === undefined || body.price === '' ? 0 : parseInt(body.price, 10),
       image: body.image || null,
       images: imagesJson,
       variants: variantsJson,

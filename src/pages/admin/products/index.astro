@@ -135,7 +135,7 @@ const allCategories = await db.select().from(categories).orderBy(categories.name
                 </td>
                 <td class="px-3 py-2">
                   <span class="font-semibold text-sm text-on-surface">
-                    {product.price != null ? `$${product.price.toLocaleString('es-CO')}` : 'Sin precio'}
+                    {product.price > 0 ? `$${product.price.toLocaleString('es-CO')}` : 'Sin precio'}
                   </span>
                 </td>
                 <td class="px-3 py-2">

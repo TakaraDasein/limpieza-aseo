@@ -80,7 +80,7 @@ const { products, categories } = Astro.props;
                     </div>
                   )}
                   
-                   {product.price != null && (
+                   {product.price > 0 && (
                      <div class="mb-3">
                        <p class="text-lg font-bold text-primary">
                          ${(product.price / 1000).toFixed(3).replace('.', ',')} COP
@@ -194,7 +194,7 @@ const { products, categories } = Astro.props;
         const quantity = input ? parseInt(input.value) || 1 : 1;
         
         // Format price
-        const hasPrice = productPrice !== null && productPrice !== '';
+        const hasPrice = productPrice !== null && productPrice !== '' && parseInt(productPrice, 10) > 0;
         const priceFormatted = hasPrice ? `$${(parseInt(productPrice, 10) / 1000).toFixed(3).replace('.', ',')} COP` : 'Consultar';
         
         // Build WhatsApp message

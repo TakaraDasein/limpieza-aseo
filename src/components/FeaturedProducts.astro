@@ -205,7 +205,7 @@ const isEmpty = sections.length === 0;
                   </div>
 
                   <div class="flex flex-col items-start justify-between border-t border-surface-container-high pt-4 sm:pt-5 gap-3 sm:gap-4">
-                    {section.cat1Products[0].price != null && (
+                    {section.cat1Products[0].price > 0 && (
                       <div class="flex flex-col">
                         <span class="text-on-surface-variant text-xs font-semibold mb-1">Desde</span>
                         <span class="text-2xl sm:text-3xl font-extrabold text-primary">{formatPrice(section.cat1Products[0].price)}</span>
@@ -271,7 +271,7 @@ const isEmpty = sections.length === 0;
                   </div>
 
                   <div class="flex flex-col items-start justify-between border-t border-surface-container-high pt-4 sm:pt-5 gap-3 sm:gap-4">
-                    {section.cat2Products[0].price != null && (
+                    {section.cat2Products[0].price > 0 && (
                       <div class="flex flex-col">
                         <span class="text-on-surface-variant text-xs font-semibold mb-1">Desde</span>
                         <span class="text-2xl sm:text-3xl font-extrabold text-primary">{formatPrice(section.cat2Products[0].price)}</span>
